@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<!-- 
+    Admin Dashboard - HR Leave Management System
+    Description: Desktop-optimized admin dashboard with statistics and approvals
+    Features:
+    - Key statistics cards (Pending, Employees, On Leave)
+    - Recent leave requests table
+    - Quick approval/reject actions
+    - Team calendar view
+    - Sidebar navigation
+    Target: Desktop browsers (min-width: 1024px)
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - HR Leave Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/styles.css">
+    <style>
+        @media (min-width: 1024px) {
+            body {
+                background: linear-gradient(to bottom, #f1f9fa, #c1e8eb);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <i class="fas fa-calendar-check text-[#00AFB9] text-2xl mr-2"></i>
+                <span class="admin-logo">HR System</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="sidebar-nav-item active">
+                    <i class="fas fa-home"></i>
+                    <span data-i18n="admin.dashboard">Dashboard</span>
+                </a>
+                <a href="approve-leaves.html" class="sidebar-nav-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span data-i18n="admin.approveLeaves">Approve Leaves</span>
+                </a>
+                <a href="compensatory-leave.html" class="sidebar-nav-item">
+                    <i class="fas fa-plus-circle"></i>
+                    <span data-i18n="admin.compensatory">Compensatory Leave (補假/扣假)</span>
+                </a>
+                <a href="manage-employees.html" class="sidebar-nav-item">
+                    <i class="fas fa-users"></i>
+                    <span data-i18n="admin.manageEmployees">Manage Employees</span>
+                </a>
+                <a href="leave-settings.html" class="sidebar-nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span data-i18n="admin.settings">Leave Settings</span>
+                </a>
+                <a href="blackout-dates.html" class="sidebar-nav-item">
+                    <i class="fas fa-ban"></i>
+                    <span data-i18n="admin.blackoutDates">Blackout Dates (禁止請假日期)</span>
+                </a>
+                <a href="reports.html" class="sidebar-nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span data-i18n="admin.reports">Reports</span>
+                </a>
+                
+                <div class="mt-auto pt-4 border-t border-white border-opacity-10">
+                    <a href="../login.html" onclick="logout()" class="sidebar-nav-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span data-i18n="nav.logout">Logout</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="admin-content">
+            <!-- Top Header -->
+            <header class="admin-header">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold" data-i18n="admin.dashboard">Dashboard</h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <!-- Language Switcher -->
+                    <div class="lang-switcher relative">
+                        <div class="flex items-center cursor-pointer" onclick="toggleLangDropdown()">
+                            <i class="fas fa-globe text-white"></i>
+                            <span class="current-lang ml-1 text-sm" id="currentLangText">EN</span>
+                        </div>
+                        <div class="dropdown-menu" id="langDropdown">
+                            <div class="dropdown-item" data-lang="en" onclick="switchLanguage('en')">
+                                English
+                            </div>
+                            <div class="dropdown-item" data-lang="zh" onclick="switchLanguage('zh')">
+                                繁體中文
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Admin Profile -->
+                    <div class="flex items-center">
+                        <div class="text-right mr-3">
+                            <p class="text-sm font-medium text-white">Administrator</p>
+                            <p class="text-xs text-white opacity-80">admin</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
+                            <i class="fas fa-user-shield text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="admin-main">
+                <!-- Welcome Section -->
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2" data-i18n="dashboard.welcome">Welcome, Admin</h2>
+                    <p class="text-gray-600" id="currentDate">Monday, October 20, 2025</p>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="admin-grid mb-6">
+                    <!-- Pending Approvals -->
+                    <div class="admin-card bg-gradient-to-br from-yellow-50 to-yellow-100 border-l-4 border-yellow-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 mb-1" data-i18n="admin.pendingApprovals">Pending Approvals</p>
+                                <p class="text-4xl font-bold text-yellow-600">5</p>
+                                <a href="approve-leaves.html" class="text-xs text-yellow-700 hover:text-yellow-800 mt-2 inline-block">
+                                    <span data-i18n="dashboard.viewAll">View all</span> →
+                                </a>
+                            </div>
+                            <div class="w-16 h-16 rounded-full bg-yellow-200 flex items-center justify-center">
+                                <i class="fas fa-clock text-yellow-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Employees (Updated from SQL Server: 49 active employees) -->
+                    <div class="admin-card bg-gradient-to-br from-blue-50 to-blue-100 border-l-4 border-blue-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 mb-1" data-i18n="admin.totalEmployees">Total Employees</p>
+                                <p class="text-4xl font-bold text-blue-600">49</p>
+                                <a href="manage-employees.html" class="text-xs text-blue-700 hover:text-blue-800 mt-2 inline-block">
+                                    <span data-i18n="dashboard.viewAll">View all</span> →
+                                </a>
+                            </div>
+                            <div class="w-16 h-16 rounded-full bg-blue-200 flex items-center justify-center">
+                                <i class="fas fa-users text-blue-600 text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- On Leave Today -->
+                    <div class="admin-card bg-gradient-to-br from-[#00AFB9] from-opacity-10 to-[#00AFB9] to-opacity-20 border-l-4 border-[#00AFB9]">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 mb-1" data-i18n="admin.onLeaveToday">On Leave Today</p>
+                                <p class="text-4xl font-bold text-[#00AFB9]">3</p>
+                                <a href="#" onclick="showOnLeaveModal()" class="text-xs text-[#00AFB9] hover:text-[#009ba3] mt-2 inline-block">
+                                    <span data-i18n="dashboard.viewDetails">View details</span> →
+                                </a>
+                            </div>
+                            <div class="w-16 h-16 rounded-full bg-[#00AFB9] bg-opacity-20 flex items-center justify-center">
+                                <i class="fas fa-user-clock text-[#00AFB9] text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Leave Requests -->
+                <div class="admin-grid-2 gap-6 mb-6">
+                    <!-- Requests Table -->
+                    <div class="col-span-2 admin-card">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-gray-800" data-i18n="admin.recentRequests">Recent Leave Requests</h3>
+                            <a href="approve-leaves.html" class="text-sm text-[#00AFB9] hover:text-[#009ba3]">
+                                <span data-i18n="dashboard.viewAll">View all</span> →
+                            </a>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50 border-b border-gray-200">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-600" data-i18n="admin.employee">Employee</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-600" data-i18n="admin.type">Type</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-600" data-i18n="admin.duration">Duration</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-600" data-i18n="admin.status">Status</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-600" data-i18n="admin.actions">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="requestsTableBody">
+                                    <!-- Will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- On Leave Today List & Quick Stats -->
+                <div class="admin-grid gap-6">
+                    <!-- Upcoming Holidays -->
+                    <div class="admin-card">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Upcoming Holidays</h3>
+                        <div id="upcomingHolidays" class="space-y-2 text-sm text-gray-700">
+                            <div class="text-gray-400">Loading...</div>
+                        </div>
+                    </div>
+                    <!-- On Leave Today -->
+                    <div class="admin-card col-span-2">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4" data-i18n="admin.onLeaveToday">On Leave Today</h3>
+                        <div class="space-y-3" id="onLeaveTodayList">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="admin-card">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4" data-i18n="admin.quickActions">Quick Actions</h3>
+                        <div class="space-y-2">
+                            <a href="approve-leaves.html" class="block p-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors font-bold shadow-md">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                <span data-i18n="admin.approveLeaves">Approve Leaves</span>
+                            </a>
+                            <a href="manage-employees.html" class="block p-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 rounded-lg transition-colors">
+                                <i class="fas fa-user-plus mr-2"></i>
+                                <span data-i18n="admin.addEmployee">Add Employee</span>
+                            </a>
+                            <a href="reports.html" class="block p-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 rounded-lg transition-colors">
+                                <i class="fas fa-file-alt mr-2"></i>
+                                <span data-i18n="admin.generateReport">Generate Report</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="../../js/app.js"></script>
+    <script>
+        // Real data from SQL Server (HRLeaveSystemDB)
+        // Note: Since no leave requests exist in current DB, showing sample structure with real employee codes
+        const recentRequests = [
+            // No pending requests in database currently
+            // Sample structure for demo: { id, employee, type, startDate, endDate, days, status }
+        ];
+
+        const onLeaveToday = [
+            // No approved leave requests for today in database currently
+            // Sample structure for demo: { name, code, type, returnDate }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if admin
+            const userRole = localStorage.getItem('userRole');
+            if (userRole !== 'admin') {
+                alert('Access denied. Admin privileges required.');
+                window.location.href = '../login.html';
+                return;
+            }
+
+            // Initialize current date
+            const dateElement = document.getElementById('currentDate');
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateElement.textContent = now.toLocaleDateString('en-US', options);
+
+            // Render tables
+            renderRequestsTable();
+            renderOnLeaveToday();
+
+            // Load upcoming holidays card
+            loadUpcomingHolidays();
+        });
+
+        // Render requests table
+        function renderRequestsTable() {
+            const tbody = document.getElementById('requestsTableBody');
+            tbody.innerHTML = '';
+
+            recentRequests.forEach(request => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-100 hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-4 py-3">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-[#00AFB9] bg-opacity-20 flex items-center justify-center mr-2">
+                                <i class="fas fa-user text-[#00AFB9] text-xs"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-800">${request.employee}</span>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="text-sm text-gray-700">${request.type}</span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="text-sm text-gray-700">
+                            ${formatDate(request.startDate)} - ${formatDate(request.endDate)}
+                            <div class="text-xs text-gray-500">${request.days} day${request.days > 1 ? 's' : ''}</div>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
+                            <i class="fas fa-clock mr-1"></i>Pending
+                        </span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex gap-2">
+                            <button onclick="approveRequest(${request.id})" class="px-3 py-1 bg-green-500 hover:bg-green-600 text-white text-xs rounded transition-colors">
+                                <i class="fas fa-check mr-1"></i>Approve
+                            </button>
+                            <button onclick="rejectRequest(${request.id})" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs rounded transition-colors">
+                                <i class="fas fa-times mr-1"></i>Reject
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Render on leave today
+        function renderOnLeaveToday() {
+            const container = document.getElementById('onLeaveTodayList');
+            container.innerHTML = '';
+
+            onLeaveToday.forEach(person => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+                item.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-[#00AFB9] bg-opacity-20 flex items-center justify-center mr-3">
+                            <i class="fas fa-user text-[#00AFB9]"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-800">${person.name} (${person.code})</p>
+                            <p class="text-xs text-gray-600">${person.type}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs text-gray-600">Returns:</p>
+                        <p class="text-xs font-medium text-gray-800">${formatDate(person.returnDate)}</p>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        async function loadUpcomingHolidays() {
+            const container = document.getElementById('upcomingHolidays');
+            if (!container) return;
+            try {
+                await ensureHolidaysLoaded();
+                const lang = (typeof currentLang !== 'undefined' && currentLang === 'zh') ? 'zh' : 'en';
+                const list = await fetchHKHolidays(lang);
+                const today = new Date();
+                const upcoming = list.filter(h => new Date(h.date) >= new Date(today.getFullYear(), today.getMonth(), today.getDate()))
+                                     .sort((a,b) => a.date.localeCompare(b.date))
+                                     .slice(0, 6);
+                if (upcoming.length === 0) {
+                    container.innerHTML = '<div class="text-gray-400">No upcoming holidays</div>';
+                    return;
+                }
+                container.innerHTML = upcoming.map(h => {
+                    const d = new Date(h.date);
+                    const disp = d.toLocaleDateString(lang === 'zh' ? 'zh-TW' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric', weekday: 'short' });
+                    return `
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span>${disp}</span>
+                            <span class="font-medium text-[#00AFB9]">${escapeHtml(h.name)}</span>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                container.innerHTML = '<div class="text-red-600">Failed to load holidays</div>';
+            }
+        }
+
+        function escapeHtml(str) {
+            return (str || '').replace(/[&<>"']/g, function(m) {
+                return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]);
+            });
+        }
+
+        window.addEventListener('languageChanged', () => {
+            loadUpcomingHolidays();
+        });
+
+        // Format date
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const options = { month: 'short', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        // Approve request
+        function approveRequest(id) {
+            if (confirm('Approve this leave request?')) {
+                showAlert('Leave request approved successfully!', 'success');
+                // Remove from list
+                const index = recentRequests.findIndex(r => r.id === id);
+                if (index !== -1) {
+                    recentRequests.splice(index, 1);
+                    renderRequestsTable();
+                }
+            }
+        }
+
+        // Reject request
+        function rejectRequest(id) {
+            const reason = prompt('Please enter rejection reason:');
+            if (reason) {
+                showAlert('Leave request rejected.', 'success');
+                // Remove from list
+                const index = recentRequests.findIndex(r => r.id === id);
+                if (index !== -1) {
+                    recentRequests.splice(index, 1);
+                    renderRequestsTable();
+                }
+            }
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('username');
+            localStorage.removeItem('rememberMe');
+        }
+
+        // Alert function
+        function showAlert(message, type) {
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                info: 'bg-blue-500'
+            };
+
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg ${colors[type] || colors.info} text-white text-sm font-medium`;
+            alertDiv.textContent = message;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

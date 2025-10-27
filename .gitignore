@@ -1,0 +1,76 @@
+# Node modules
+node_modules/
+**/node_modules/
+
+# Environment variables
+.env
+*.env
+.env.local
+.env.production
+backend/.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+backend/logs/
+
+# Python virtual environment
+hr.reference/etakhr/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Flask sessions
+hr.reference/flask_session/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Build outputs
+dist/
+build/
+*.min.js
+*.min.css
+.cache/
+
+# Temporary files
+*.tmp
+*.temp
+~*
+*.bak
+*.backup
+
+# Package manager files (optional - some teams keep these)
+# package-lock.json
+# yarn.lock
+
+# Production database dumps (keep schema, exclude data dumps)
+*.dump
+*.backup.sql
+
+# PM2 logs (if using PM2)
+.pm2/
+

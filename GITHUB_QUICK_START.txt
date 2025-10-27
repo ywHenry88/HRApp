@@ -1,0 +1,106 @@
+================================================================================
+  GITHUB DEPLOYMENT - QUICK START COMMANDS
+  HR Leave Management System
+================================================================================
+
+STEP 1: OPEN COMMAND PROMPT IN PROJECT FOLDER
+----------------------------------------------
+cd C:\github\py01\Etak\HRApp1.0
+
+
+STEP 2: INITIALIZE GIT (FIRST TIME ONLY)
+-----------------------------------------
+git init
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+
+
+STEP 3: ADD ALL FILES
+---------------------
+git add .
+git status
+
+
+STEP 4: COMMIT FILES
+--------------------
+git commit -m "Initial commit: HR Leave Management System v1.0"
+
+
+STEP 5: CREATE GITHUB REPOSITORY
+---------------------------------
+1. Open browser: https://github.com/new
+2. Repository name: HRApp (or your choice)
+3. Description: HR Leave Management System
+4. Choose: Public or Private
+5. DO NOT check "Initialize with README"
+6. Click "Create repository"
+
+
+STEP 6: CONNECT TO GITHUB
+--------------------------
+Replace YOUR_USERNAME with your GitHub username:
+
+git remote add origin https://github.com/YOUR_USERNAME/HRApp.git
+git branch -M main
+git push -u origin main
+
+
+STEP 7: ENTER CREDENTIALS
+--------------------------
+When prompted:
+- Username: Your GitHub username
+- Password: Use Personal Access Token (not your account password)
+  
+  To create token:
+  1. GitHub → Settings → Developer settings → Personal access tokens
+  2. Generate new token (classic)
+  3. Select scope: repo (full control)
+  4. Copy token and use as password
+
+
+DONE! ✅
+--------
+Your code is now on GitHub!
+Visit: https://github.com/YOUR_USERNAME/HRApp
+
+
+================================================================================
+  FUTURE UPDATES (AFTER MAKING CHANGES)
+================================================================================
+
+git status                          # See what changed
+git add .                           # Stage all changes
+git commit -m "Description"         # Commit with message
+git push                            # Push to GitHub
+
+
+================================================================================
+  HELPFUL COMMANDS
+================================================================================
+
+git status                          # Check current status
+git log                             # View commit history
+git remote -v                       # View remote URLs
+git pull                            # Pull latest changes
+git clone <url>                     # Clone repository
+
+
+================================================================================
+  TROUBLESHOOTING
+================================================================================
+
+Problem: "Authentication failed"
+Solution: Use Personal Access Token instead of password
+
+Problem: "Branch main does not exist"
+Solution: git branch -M main
+
+Problem: "Remote origin already exists"
+Solution: git remote remove origin
+         Then re-add: git remote add origin <url>
+
+
+================================================================================
+For detailed instructions, see: GITHUB_DEPLOYMENT_GUIDE.md
+================================================================================
+

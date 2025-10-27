@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Etak Logistics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Etak Logistics" class="logo">
+        </div>
+        <ul class="navbar-menu">
+            <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
+            <li><a href="{{ url_for('timetable.timetable_form') }}">Monthly Timetable</a></li>
+            <li><a href="{{ url_for('hr_calendar.display_calendar') }}">HR Calendar</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h1>Welcome, {{ staff_name }}</h1>
+        <div class="dashboard">
+            <div class="card">
+                <img src="{{ url_for('static', filename='images/timetable-icon.png') }}" alt="Timetable" class="card-icon">
+                <h2>Monthly Timetable</h2>
+                <p>View and manage the monthly timetable for your team.</p>
+                <a href="{{ url_for('timetable.timetable_form') }}" class="btn">Go to Timetable</a>
+            </div>
+            <div class="card">
+                <img src="{{ url_for('static', filename='images/calendar-icon.png') }}" alt="Calendar" class="card-icon">
+                <h2>HR Calendar</h2>
+                <p>View and manage leave applications in a calendar view.</p>
+                <a href="{{ url_for('hr_calendar.display_calendar') }}" class="btn">Go to Calendar</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

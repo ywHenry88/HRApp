@@ -1,0 +1,145 @@
+/* Version: 2.0.0 */
+/* Main Stylesheet */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans antialiased text-gray-800;
+  }
+  
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer components {
+  /* Buttons */
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 inline-block text-center;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-primary-hover active:scale-95;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 text-gray-800 hover:bg-gray-300 active:scale-95;
+  }
+  
+  .btn-danger {
+    @apply bg-red-500 text-white hover:bg-red-600 active:scale-95;
+  }
+  
+  /* Cards */
+  .card {
+    @apply bg-white rounded-lg shadow-md p-4;
+  }
+  
+  /* Form Elements */
+  .form-input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all;
+  }
+  
+  .form-label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+  
+  .form-select {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all bg-white;
+  }
+  
+  .form-textarea {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all resize-none;
+  }
+  
+  /* Status Badges */
+  .status-badge {
+    @apply inline-block px-2 py-1 text-xs font-medium rounded-full;
+  }
+  
+  .status-pending {
+    @apply bg-orange-100 text-orange-800;
+  }
+  
+  .status-approved {
+    @apply bg-green-100 text-green-800;
+  }
+  
+  .status-rejected {
+    @apply bg-red-100 text-red-800;
+  }
+  
+  .status-cancelled {
+    @apply bg-gray-100 text-gray-800;
+  }
+  
+  /* Mobile Container */
+  .mobile-container {
+    @apply max-w-mobile mx-auto;
+  }
+  
+  /* Page Container */
+  .page-container {
+    @apply min-h-screen bg-gray-100;
+  }
+  
+  /* Header */
+  .header {
+    @apply bg-white shadow-md fixed top-0 left-0 right-0 z-50;
+  }
+  
+  /* Bottom Navigation */
+  .bottom-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50;
+  }
+  
+  /* Page Content with Navigation Spacing */
+  .page-content {
+    @apply pt-16 pb-20 px-4;
+  }
+  
+  /* Admin Layout */
+  .admin-layout {
+    @apply flex min-h-screen bg-gray-100;
+  }
+  
+  .admin-sidebar {
+    @apply w-64 bg-white shadow-lg fixed left-0 top-0 bottom-0 overflow-y-auto;
+  }
+  
+  .admin-content {
+    @apply flex-1 ml-64 p-6;
+  }
+  
+  /* Calendar Styles */
+  .calendar-day {
+    @apply border border-gray-200 p-2 min-h-[80px] hover:bg-gray-50 transition-colors;
+  }
+  
+  .calendar-day.today {
+    @apply bg-primary-light;
+  }
+  
+  .calendar-day.holiday {
+    @apply bg-red-50;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<!-- 
+    Main Entry Page - HR Leave Management System
+    Description: Welcome page with demo access links
+    Note: This is a prototype/demo page. In production, users should go directly to login page.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Leave Management System - Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #00AFB9 0%, #4BCBD6 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .main-container {
+            max-width: 600px;
+            padding: 2rem 1rem;
+        }
+        .btn {
+            display: block;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s;
+            text-decoration: none;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: white;
+            color: #00AFB9;
+        }
+        .btn-primary:hover {
+            background-color: #f9fafb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #00AFB9;
+            border: 2px solid white;
+            font-weight: 600;
+        }
+        .btn-secondary:hover {
+            background-color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .feature-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+        }
+        .feature-item i {
+            font-size: 2rem;
+            color: #00AFB9;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <i class="fas fa-calendar-check text-[#00AFB9] text-3xl"></i>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">HR Leave Management</h1>
+            <p class="text-white text-opacity-90">Employee & Admin Portal</p>
+        </div>
+
+        <!-- Main Card -->
+        <div class="card">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Welcome to the Demo</h2>
+            <p class="text-gray-600 mb-6">
+                This is a comprehensive HTML UI prototype for visual confirmation and fine-tuning. 
+                Choose how you want to access the system:
+            </p>
+            
+            <div class="space-y-3 mb-6">
+                <a href="pages/login.html" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt mr-2"></i> Start Demo (Login Page)
+                </a>
+                
+                <a href="pages/employee/dashboard.html" class="btn btn-secondary">
+                    <i class="fas fa-mobile-alt mr-2"></i> Employee View (Mobile)
+                </a>
+                
+                <a href="pages/admin/dashboard.html" class="btn btn-secondary">
+                    <i class="fas fa-desktop mr-2"></i> Admin View (Desktop)
+                </a>
+            </div>
+
+            <!-- Features -->
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <i class="fas fa-mobile-alt"></i>
+                    <p class="text-xs font-medium text-gray-700">Mobile First</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-language"></i>
+                    <p class="text-xs font-medium text-gray-700">Bilingual EN/中文</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <p class="text-xs font-medium text-gray-700">Team Calendar</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-check-circle"></i>
+                    <p class="text-xs font-medium text-gray-700">Quick Approval</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Credentials Card -->
+        <div class="card">
+            <h3 class="text-lg font-bold text-gray-800 mb-3">Demo Credentials</h3>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div class="p-3 bg-blue-50 rounded">
+                    <p class="font-bold text-blue-800 mb-1">Admin</p>
+                    <p class="text-xs text-blue-700">Staff Code: <strong>ADMIN001</strong></p>
+                    <p class="text-xs text-blue-700">Name: <strong>System Administrator</strong></p>
+                    <p class="text-xs text-gray-600 mt-1 italic">(From SQL Server tb_Users)</p>
+                </div>
+                <div class="p-3 bg-green-50 rounded">
+                    <p class="font-bold text-green-800 mb-1">Employee</p>
+                    <p class="text-xs text-green-700">Staff Code: <strong>L003</strong></p>
+                    <p class="text-xs text-green-700">Name: <strong>Wong Pak Kun (黃柏根)</strong></p>
+                    <p class="text-xs text-gray-600 mt-1 italic">(From SQL Server tb_Users)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-white text-sm">
+            <p class="mb-2">HTML UI Prototype</p>
+            <p class="text-xs text-white text-opacity-75">
+                <i class="fas fa-info-circle mr-1"></i>
+                This is a static HTML prototype for visual design confirmation
+            </p>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html> 

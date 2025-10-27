@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Leaves - {{ month_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Etak Logistics" class="logo">
+        </div>
+        <ul class="navbar-menu">
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('timetable.timetable_form') }}">Monthly Timetable</a></li>
+            <li><a href="{{ url_for('hr_calendar.display_calendar') }}" class="active">HR Calendar</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h1>Leave Applications for {{ staff_name }} - {{ month_name }}</h1>
+        {% if leave_applications %}
+            <table class="leave-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Leave Type</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for leave in leave_applications %}
+                    <tr>
+                        <td>{{ leave.date }}</td>
+                        <td>{{ leave.full_description }}</td>
+                        <td>{{ leave.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No leave applications found for this staff member in {{ month_name }}.</p>
+        {% endif %}
+        <a href="{{ url_for('hr_calendar.display_calendar', year=year, month=month) }}" class="btn">Back to Calendar</a>
+    </div>
+</body>
+</html>

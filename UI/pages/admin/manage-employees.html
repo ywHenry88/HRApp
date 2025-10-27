@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<!-- 
+    Manage Employees - HR Leave Management System
+    Description: Admin page for managing employee records and leave allocations
+    Features:
+    - View all employees with search and filter
+    - Add new employees
+    - Edit employee information
+    - Deactivate employees
+    - View leave balances
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Employees - HR Leave Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <i class="fas fa-calendar-check text-[#00AFB9] text-2xl mr-2"></i>
+                <span class="admin-logo">HR System</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="sidebar-nav-item">
+                    <i class="fas fa-home"></i>
+                    <span data-i18n="admin.dashboard">Dashboard</span>
+                </a>
+                <a href="approve-leaves.html" class="sidebar-nav-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span data-i18n="admin.approveLeaves">Approve Leaves</span>
+                </a>
+                <a href="compensatory-leave.html" class="sidebar-nav-item">
+                    <i class="fas fa-plus-circle"></i>
+                    <span data-i18n="admin.compensatory">Compensatory Leave (補假/扣假)</span>
+                </a>
+                <a href="manage-employees.html" class="sidebar-nav-item active">
+                    <i class="fas fa-users"></i>
+                    <span data-i18n="admin.manageEmployees">Manage Employees</span>
+                </a>
+                <a href="leave-settings.html" class="sidebar-nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span data-i18n="admin.settings">Leave Settings</span>
+                </a>
+                <a href="blackout-dates.html" class="sidebar-nav-item">
+                    <i class="fas fa-ban"></i>
+                    <span data-i18n="admin.blackoutDates">Blackout Dates (禁止請假日期)</span>
+                </a>
+                <a href="reports.html" class="sidebar-nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span data-i18n="admin.reports">Reports</span>
+                </a>
+                
+                <div class="mt-auto pt-4 border-t border-white border-opacity-10">
+                    <a href="../login.html" onclick="logout()" class="sidebar-nav-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span data-i18n="nav.logout">Logout</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="admin-content">
+            <!-- Top Header -->
+            <header class="admin-header">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold" data-i18n="admin.manageEmployees">Manage Employees</h1>
+                    <span class="ml-3 px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-full">
+                        <span id="employeeCount">49</span> Employees
+                    </span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <!-- Language Switcher -->
+                    <div class="lang-switcher relative">
+                        <div class="flex items-center cursor-pointer" onclick="toggleLangDropdown()">
+                            <i class="fas fa-globe text-white"></i>
+                            <span class="current-lang ml-1 text-sm" id="currentLangText">EN</span>
+                        </div>
+                        <div class="dropdown-menu" id="langDropdown">
+                            <div class="dropdown-item" data-lang="en" onclick="switchLanguage('en')">
+                                English
+                            </div>
+                            <div class="dropdown-item" data-lang="zh" onclick="switchLanguage('zh')">
+                                繁體中文
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Admin Profile -->
+                    <div class="flex items-center">
+                        <div class="text-right mr-3">
+                            <p class="text-sm font-medium text-white">Administrator</p>
+                            <p class="text-xs text-white opacity-80">admin</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
+                            <i class="fas fa-user-shield text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="admin-main">
+                <!-- Actions Bar -->
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex gap-3">
+                        <!-- Search -->
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="searchInput" placeholder="Search employees..."
+                                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9] w-64"
+                                oninput="filterEmployees()">
+                                        </div>
+                        
+                        <!-- Department Filter (aligned with SQL Server: TRANS, WAREH, OFFICE) -->
+                        <select id="deptFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]" onchange="filterEmployees()">
+                            <option value="all">All Departments</option>
+                            <option value="Transportation">Transportation (TRANS)</option>
+                            <option value="Warehouse">Warehouse (WAREH)</option>
+                            <option value="Office">Office (OFFICE)</option>
+                        </select>
+                        
+                        <!-- Status Filter -->
+                        <select id="statusFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]" onchange="filterEmployees()">
+                            <option value="active">Active Only</option>
+                            <option value="all">All Status</option>
+                            <option value="inactive">Inactive Only</option>
+                        </select>
+                        
+                        <!-- View Toggle -->
+                        <div class="flex border border-gray-300 rounded-lg overflow-hidden">
+                            <button onclick="switchView('table')" id="tableViewBtn" class="px-4 py-2 bg-[#00AFB9] text-white hover:bg-[#009ba3] transition-colors">
+                                <i class="fas fa-table mr-1"></i>Table
+                            </button>
+                            <button onclick="switchView('grid')" id="gridViewBtn" class="px-4 py-2 bg-white hover:bg-gray-100 transition-colors">
+                                <i class="fas fa-th-large mr-1"></i>Grid
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button onclick="showAddEmployeeModal()" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold px-6 py-2 rounded-lg transition-colors flex items-center shadow-lg">
+                        <i class="fas fa-user-plus mr-2"></i>
+                        <span data-i18n="admin.addEmployee">Add Employee</span>
+                            </button>
+                        </div>
+
+                <!-- Employees Table View -->
+                <div id="employeesTable" class="admin-card">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 border-b-2 border-gray-200">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 cursor-pointer hover:bg-gray-100" onclick="sortTable('code')">
+                                        ID <i class="fas fa-sort ml-1"></i>
+                                    </th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 cursor-pointer hover:bg-gray-100" onclick="sortTable('name')">
+                                        Name <i class="fas fa-sort ml-1"></i>
+                                    </th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 cursor-pointer hover:bg-gray-100" onclick="sortTable('department')">
+                                        Department <i class="fas fa-sort ml-1"></i>
+                                    </th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600">Position</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600">Email</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600">Annual Leave</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="employeesTableBody">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Employees Grid View -->
+                <div class="grid grid-cols-3 gap-6 hidden" id="employeesGrid">
+                    <!-- Populated by JavaScript -->
+                    </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="hidden text-center py-12">
+                    <i class="fas fa-users text-gray-300 text-5xl mb-4"></i>
+                    <p class="text-gray-500" data-i18n="admin.noEmployees">No employees found</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add/Edit Employee Modal -->
+    <div id="employeeModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-6 border-b pb-4">
+                    <h3 class="text-xl font-bold text-gray-800" id="modalTitle" data-i18n="admin.addEmployee">Add Employee</h3>
+                    <button onclick="closeEmployeeModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+                <form id="employeeForm" class="space-y-6">
+                    <!-- Personal Information -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-600 mb-3" data-i18n="admin.personalInfo">Personal Information</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="admin.fullNameEN">Full Name (EN) *</label>
+                                <input type="text" id="employeeNameEN" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="admin.fullNameZH">Full Name (ZH) *</label>
+                                <input type="text" id="employeeNameZH" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="admin.employeeCode">Staff Code (max 40 chars) *</label>
+                                <input type="text" id="employeeCode" required maxlength="40"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="admin.email">Email (max 100 chars)</label>
+                                <input type="email" id="employeeEmail" maxlength="100"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="admin.department">Department *</label>
+                                <select id="employeeDepartment" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                                    <option value="">Select Department</option>
+                                    <option value="TRANS">Transportation (TRANS)</option>
+                                    <option value="WAREH">Warehouse (WAREH)</option>
+                                    <option value="OFFICE">Office (OFFICE)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="admin.position">Position (max 50 chars)</label>
+                                <input type="text" id="employeePosition" maxlength="50"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="admin.mobile">Mobile (max 50 chars)</label>
+                                <input type="text" id="employeeMobile" maxlength="50"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="admin.employType">Employment Type (max 50 chars)</label>
+                                <input type="text" id="employeeType" maxlength="50" placeholder="e.g., FULL(5.5)"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Information -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-600 mb-3" data-i18n="admin.accountInfo">Account Information</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                    <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="admin.role">Role *</label>
+                                <select id="employeeRole" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                                    <option value="Employee">Employee</option>
+                                    <option value="Admin">Admin</option>
+                                </select>
+                    </div>
+                    <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="admin.status">Status</label>
+                                <select id="employeeStatus"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                        </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="admin.hireDate">Hire Date</label>
+                                <input type="date" id="employeeHireDate"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="admin.sickLeaveDays">Sick Leave Paid Days</label>
+                                <input type="number" id="sickLeaveDays" value="4.5" step="0.5" min="0"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leave Allocation -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-600 mb-3" data-i18n="admin.leaveAllocation">Leave Allocation (Days per Year)</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="leave.annual">Annual Leave</label>
+                                <input type="number" id="annualLeave" value="20" min="0" max="365" step="0.5"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="leave.sick">Sick Leave</label>
+                                <input type="number" id="sickLeave" value="10" min="0" max="365" step="0.5"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                            </div>
+        </div>
+    </div>
+
+                    <!-- Actions -->
+                    <div class="flex gap-3 pt-4 border-t">
+                        <button type="button" onclick="closeEmployeeModal()" 
+                            class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors" data-i18n="common.cancel">
+                    Cancel
+                </button>
+                        <button type="submit" 
+                            class="flex-1 bg-[#00AFB9] hover:bg-[#009ba3] text-white font-medium py-2 px-4 rounded-lg transition-colors" data-i18n="common.save">
+                            Save Employee
+                </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/app.js"></script>
+    <script>
+        // Real employee data from SQL Server (HRLeaveSystemDB.tb_Users)
+        // Data types aligned with database schema
+        const employees = [
+            { id: 1, code: 'ADMIN001', name: 'System Administrator (系統管理員)', email: 'admin@company.com', department: 'Office', position: 'Administrator', status: 'active', annual: '20/20', sick: '10/10', mobile: '90000001', employType: 'FULL(5.5)' },
+            { id: 2, code: 'L003', name: 'Wong Pak Kun (黃柏根)', email: '', department: 'Transportation', position: 'Training Officer(5.5天)', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(5)' },
+            { id: 3, code: 'L006', name: 'Ling Chi Wai (凌志偉)', email: '', department: 'Transportation', position: 'Supervisor', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(5.5)' },
+            { id: 4, code: 'L016', name: 'Lam Wai Ho (林偉豪)', email: '', department: 'Office', position: 'Manager', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(5)' },
+            { id: 5, code: 'L021', name: 'Lam Wing Fat (林詠發)', email: '', department: 'Transportation', position: '司機', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(6)' },
+            { id: 6, code: 'L079', name: 'Yeung Chi Man (楊志文)', email: '', department: 'Transportation', position: '跟車送貨員', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(6)' },
+            { id: 7, code: 'L097', name: 'Seto Ka Ming (司徒家明)', email: '', department: 'Office', position: 'Manager', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(5)' },
+            { id: 8, code: 'L099', name: 'Ip Man Pan (葉文賓)', email: '', department: 'Warehouse', position: 'Supervisor', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(5.5)' },
+            { id: 9, code: 'L131', name: 'Lam Wing Shing (林永誠)', email: '', department: 'Transportation', position: '跟車送貨員', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(6)' },
+            { id: 10, code: 'L132', name: 'Wan Yim Lung (尹炎瓏)', email: '', department: 'Transportation', position: 'Supervisor', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(5)' },
+            { id: 11, code: 'L152', name: 'Chan Chun Man (陳俊民)', email: '', department: 'Office', position: 'C.S', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(5.5)' },
+            { id: 12, code: 'L153', name: 'Chu Cheuk Kit (朱卓傑)', email: '', department: 'Warehouse', position: 'Supervisor', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(5.5)' },
+            { id: 13, code: 'L154', name: 'Tang Wai Kin (鄧偉建)', email: '', department: 'Transportation', position: '司機', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(5.5)' },
+            { id: 14, code: 'L159', name: 'Wong Kam Yip (黃金業)', email: '', department: 'Warehouse', position: '倉務員（5.5 天)', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(5.5)' },
+            { id: 15, code: 'L163', name: 'Li Chik Ping (李植平)', email: '', department: 'Transportation', position: '司機', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(6)' },
+            { id: 16, code: 'L167', name: 'Wong Hei Wai (黃熙威)', email: '', department: 'Warehouse', position: '倉務員（5.5 天)', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(5.5)' },
+            { id: 17, code: 'L168', name: 'Yuen Hui Sze (袁墟斯)', email: '', department: 'Transportation', position: '司機', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(6)' },
+            { id: 18, code: 'L170', name: 'Li Jianhua (李健華)', email: '', department: 'Transportation', position: '司機', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(5)' },
+            { id: 19, code: 'L173', name: 'Yu Ka Man (余嘉文)', email: '', department: 'Transportation', position: '司機', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(6)' },
+            { id: 20, code: 'L175', name: 'Cheung Yuk Kwan (張玉君)', email: '', department: 'Office', position: '清潔員', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(6)' },
+            { id: 21, code: 'L198', name: 'Yu Wai Man (余偉文)', email: '', department: 'Transportation', position: '司機', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(5.5)' },
+            { id: 22, code: 'L210', name: 'Lo Ka Yan (盧家欣)', email: '', department: 'Office', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '93009444', employType: 'FULL(5.5)' },
+            { id: 23, code: 'L212', name: 'Zeng Yunlong (曾雲龍)', email: '', department: 'Warehouse', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '68993819', employType: 'FULL(5.5)' },
+            { id: 24, code: 'L213', name: 'Lam Ping Man (林炳文)', email: '', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '53744773', employType: 'FULL(6)' },
+            { id: 25, code: 'L214', name: 'Ip Kim Ming (葉劍明)', email: '', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '90885966', employType: 'FULL(6)' },
+            { id: 26, code: 'L217', name: 'Wong Man Hei (王汶熙)', email: '', department: 'Warehouse', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '54005122', employType: 'FULL(5.5)' },
+            { id: 27, code: 'L224', name: 'Tang Yin Chiu (鄧演潮)', email: '', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '67317860', employType: 'FULL(6)' },
+            { id: 28, code: 'L231', name: 'KHAN, Mohammad Saeed (KHAN M S)', email: '', department: 'Transportation', position: '司機', status: 'active', annual: '0/0', sick: '0/0', mobile: '5170 7525', employType: 'FULL(6)' },
+            { id: 29, code: 'L234', name: 'Chan Wai Sum (陳偉森)', email: '', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '67393922', employType: 'FULL(6)' },
+            { id: 30, code: 'L237', name: 'Chik Ka Hin (植嘉軒)', email: '', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(6)' },
+            { id: 31, code: 'L239', name: 'Chui Yan Shun (徐人舜)', email: '', department: 'Warehouse', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(5.5)' },
+            { id: 32, code: 'L240', name: 'Leung Cheuk Yin (梁卓然)', email: '', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '6688 2961', employType: 'FULL(6)' },
+            { id: 33, code: 'L248', name: 'Lam Kam Wan (林錦雲)', email: '', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(6)' },
+            { id: 34, code: 'L249', name: 'Jiang Jianyu (江劍羽)', email: '', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(6)' },
+            { id: 35, code: 'L250', name: 'Yuen Ho Yin (袁浩賢)', email: '', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(6)' },
+            { id: 36, code: 'L251', name: 'Wong Ping Wo (黃炳和)', email: '', department: 'Warehouse', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(5.5)' },
+            { id: 37, code: 'L252', name: 'Poon Yam Fai (潘任輝)', email: 'paulpoon0852@gmail.com', department: 'Transportation', position: '司機', status: 'active', annual: '0/0', sick: '0/0', mobile: '98537959', employType: 'FULL(6)' },
+            { id: 38, code: 'L255', name: 'Cheung Sung Wai (張崇瑋)', email: '', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '', employType: 'FULL(6)' },
+            { id: 39, code: 'L256', name: 'Tsang Kwong Fat (曾廣發)', email: '844656942fatfat@gmail.com', department: 'Warehouse', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '6902 6663', employType: 'FULL(5.5)' },
+            { id: 40, code: 'L258', name: 'Wong Chi Hin (黃子軒)', email: '', department: 'Transportation', position: 'wong_chihin@yahoo.com.hk', status: 'active', annual: '0/0', sick: '0/0', mobile: '94224496', employType: 'FULL(5)' },
+            { id: 41, code: 'L259', name: 'Kwong He Kevin (鄺致林)', email: '', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '64882079', employType: 'FULL(6)' },
+            { id: 42, code: 'L261', name: 'Wong Cheong Moon (黃昌滿)', email: 'simonwong719@msn.com', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '96577655', employType: 'FULL(6)' },
+            { id: 43, code: 'L262', name: 'Ng Pak Hin (吳柏軒)', email: 'nphin.7.0409@gmail.com', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '53007532', employType: 'FULL(5)' },
+            { id: 44, code: 'L264', name: 'Ng Siu Fung (吳少峰)', email: 'fn9332521643@gmail.com', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '93325216', employType: 'FULL(5)' },
+            { id: 45, code: 'L265', name: 'So Wun Ming (蘇煥銘)', email: 'amwgah1@yahoo.com.hk', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '55921212', employType: 'FULL(5)' },
+            { id: 46, code: 'L266', name: 'Chan Yun Kit (陳潤傑)', email: 'kitkitkit201212@gmail.com', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '9706 8266', employType: 'FULL(6)' },
+            { id: 47, code: 'T012', name: 'Hui Ka Wai (許家偉)', email: 'trucklinkco@yahoo.com.hk', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '66633070', employType: 'FULL(5)' },
+            { id: 48, code: 'T013', name: 'Lee Hon Wing (李漢榮)', email: 'leehonwing102@gmail.com', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '54997493', employType: 'FULL(5)' },
+            { id: 49, code: 'T016', name: 'Chan Ka Wun (陳嘉媛)', email: 'kawunchan08@Gmail.com', department: 'Transportation', position: '', status: 'active', annual: '0/0', sick: '0/0', mobile: '46203238', employType: 'FULL(5)' }
+        ];
+
+        let allEmployees = [...employees];
+        let currentView = 'table'; // Default to table view
+        let sortColumn = 'code'; // Default sort by ID
+        let sortDirection = 'asc';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if admin
+            const userRole = localStorage.getItem('userRole');
+            if (userRole !== 'admin') {
+                alert('Access denied. Admin privileges required.');
+                window.location.href = '../login.html';
+                return;
+            }
+
+            // Sort employees by ID (code) by default
+            sortEmployees('code');
+            renderEmployees();
+        });
+
+        // Filter employees
+        function filterEmployees() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const dept = document.getElementById('deptFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            allEmployees = employees.filter(emp => {
+                const matchSearch = search === '' || emp.name.toLowerCase().includes(search) || emp.code.toLowerCase().includes(search);
+                const matchDept = dept === 'all' || emp.department === dept;
+                const matchStatus = status === 'all' || emp.status === status;
+                
+                return matchSearch && matchDept && matchStatus;
+            });
+
+            renderEmployees();
+        }
+
+        // Switch view (table/grid)
+        function switchView(view) {
+            currentView = view;
+            const tableView = document.getElementById('employeesTable');
+            const gridView = document.getElementById('employeesGrid');
+            const tableBtn = document.getElementById('tableViewBtn');
+            const gridBtn = document.getElementById('gridViewBtn');
+
+            if (view === 'table') {
+                tableView.classList.remove('hidden');
+                gridView.classList.add('hidden');
+                tableBtn.classList.add('bg-[#00AFB9]', 'text-white');
+                tableBtn.classList.remove('bg-white');
+                gridBtn.classList.remove('bg-[#00AFB9]', 'text-white');
+                gridBtn.classList.add('bg-white');
+            } else {
+                tableView.classList.add('hidden');
+                gridView.classList.remove('hidden');
+                gridBtn.classList.add('bg-[#00AFB9]', 'text-white');
+                gridBtn.classList.remove('bg-white');
+                tableBtn.classList.remove('bg-[#00AFB9]', 'text-white');
+                tableBtn.classList.add('bg-white');
+            }
+            renderEmployees();
+        }
+
+        // Sort employees
+        function sortEmployees(column) {
+            if (sortColumn === column) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = column;
+                sortDirection = 'asc';
+            }
+
+            allEmployees.sort((a, b) => {
+                let aVal = a[column];
+                let bVal = b[column];
+
+                if (typeof aVal === 'string') {
+                    aVal = aVal.toLowerCase();
+                    bVal = bVal.toLowerCase();
+                }
+
+                if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+                if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+
+        // Sort table (called from table headers)
+        function sortTable(column) {
+            sortEmployees(column);
+            renderEmployees();
+        }
+
+        // Render employees (table or grid)
+        function renderEmployees() {
+            if (currentView === 'table') {
+                renderEmployeesTable();
+            } else {
+                renderEmployeesGrid();
+            }
+        }
+
+        // Render employees table
+        function renderEmployeesTable() {
+            const tbody = document.getElementById('employeesTableBody');
+            const emptyState = document.getElementById('emptyState');
+            document.getElementById('employeeCount').textContent = allEmployees.length;
+
+            tbody.innerHTML = '';
+
+            if (allEmployees.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            allEmployees.forEach(emp => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-100 hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="px-4 py-3">
+                        <span class="font-mono text-sm font-medium text-gray-800">${emp.code}</span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#00AFB9] to-[#4BCBD6] flex items-center justify-center mr-2">
+                                <span class="text-white text-xs font-bold">${emp.name.charAt(0)}</span>
+                            </div>
+                            <span class="text-sm font-medium text-gray-800">${emp.name}</span>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="px-2 py-1 text-xs font-medium rounded bg-blue-100 text-blue-800">${emp.department}</span>
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-700">${emp.position}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${emp.email}</td>
+                    <td class="px-4 py-3 text-sm text-gray-700">${emp.annual}</td>
+                    <td class="px-4 py-3">
+                        <span class="px-2 py-1 text-xs font-medium rounded-full ${emp.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
+                            ${emp.status}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <button onclick="viewEmployee(${emp.id})" class="text-blue-600 hover:text-blue-800 text-sm mr-2" title="View">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button onclick="editEmployee(${emp.id})" class="text-green-600 hover:text-green-800 text-sm mr-2" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="toggleEmployeeStatus(${emp.id})" class="text-${emp.status === 'active' ? 'red' : 'green'}-600 hover:text-${emp.status === 'active' ? 'red' : 'green'}-800 text-sm" title="${emp.status === 'active' ? 'Deactivate' : 'Activate'}">
+                            <i class="fas fa-${emp.status === 'active' ? 'ban' : 'check-circle'}"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Render employees grid
+        function renderEmployeesGrid() {
+            const grid = document.getElementById('employeesGrid');
+            const emptyState = document.getElementById('emptyState');
+            document.getElementById('employeeCount').textContent = allEmployees.length;
+
+            grid.innerHTML = '';
+
+            if (allEmployees.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            allEmployees.forEach(emp => {
+                const card = document.createElement('div');
+                card.className = 'admin-card hover:shadow-lg transition-shadow';
+                card.innerHTML = `
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[#00AFB9] to-[#4BCBD6] flex items-center justify-center mr-3">
+                                <span class="text-white text-lg font-bold">${emp.name.charAt(0)}</span>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-gray-800">${emp.name}</h3>
+                                <p class="text-xs text-gray-600">${emp.code}</p>
+                            </div>
+                        </div>
+                        <span class="px-2 py-1 text-xs font-medium rounded-full ${emp.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
+                            ${emp.status}
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4 text-sm">
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-envelope w-5 text-[#00AFB9]"></i>
+                            <span class="text-xs">${emp.email}</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-building w-5 text-[#00AFB9]"></i>
+                            <span class="text-xs">${emp.department}</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-briefcase w-5 text-[#00AFB9]"></i>
+                            <span class="text-xs">${emp.position}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4 p-3 bg-gray-50 rounded">
+                        <p class="text-xs font-medium text-gray-600 mb-2">Leave Balance</p>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div>Annual: <span class="font-medium">${emp.annual}</span></div>
+                            <div>Sick: <span class="font-medium">${emp.sick}</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button onclick="viewEmployee(${emp.id})" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-xs py-2 rounded transition-colors">
+                            <i class="fas fa-eye mr-1"></i>View
+                        </button>
+                        <button onclick="editEmployee(${emp.id})" class="flex-1 bg-green-500 hover:bg-green-600 text-white text-xs py-2 rounded transition-colors">
+                            <i class="fas fa-edit mr-1"></i>Edit
+                        </button>
+                    </div>
+                    <button onclick="toggleEmployeeStatus(${emp.id})" class="w-full mt-2 bg-${emp.status === 'active' ? 'red' : 'gray'}-500 hover:bg-${emp.status === 'active' ? 'red' : 'gray'}-600 text-white text-xs py-2 rounded transition-colors">
+                        <i class="fas fa-${emp.status === 'active' ? 'ban' : 'check-circle'} mr-1"></i>${emp.status === 'active' ? 'Deactivate' : 'Activate'}
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Show add employee modal
+        function showAddEmployeeModal() {
+            document.getElementById('modalTitle').textContent = 'Add New Employee';
+            document.getElementById('employeeForm').reset();
+            document.getElementById('employeeForm').dataset.mode = 'add';
+            document.getElementById('employeeCode').disabled = false;
+            document.getElementById('employeeModal').classList.remove('hidden');
+        }
+
+        // Close employee modal
+        function closeEmployeeModal() {
+            document.getElementById('employeeModal').classList.add('hidden');
+        }
+
+        // View employee details
+        function viewEmployee(id) {
+            const emp = employees.find(e => e.id === id);
+            if (!emp) return;
+
+            alert(`Employee Details\n\nStaff Code: ${emp.code}\nName: ${emp.name}\nEmail: ${emp.email || 'N/A'}\nDepartment: ${emp.department}\nPosition: ${emp.position}\nEmployment Type: ${emp.employType || 'N/A'}\nMobile: ${emp.mobile || 'N/A'}\nStatus: ${emp.status}\n\nAnnual Leave: ${emp.annual}\nSick Leave: ${emp.sick}`);
+        }
+
+        // Edit employee
+        function editEmployee(id) {
+            const emp = employees.find(e => e.id === id);
+            if (!emp) return;
+
+            // Parse name to get EN and ZH parts
+            const nameMatch = emp.name.match(/^(.+?)\s*\((.+?)\)$/);
+            const nameEN = nameMatch ? nameMatch[1] : emp.name;
+            const nameZH = nameMatch ? nameMatch[2] : '';
+
+            document.getElementById('modalTitle').textContent = 'Edit Employee';
+            document.getElementById('employeeForm').dataset.mode = 'edit';
+            document.getElementById('employeeForm').dataset.id = id;
+            
+            document.getElementById('employeeNameEN').value = nameEN;
+            document.getElementById('employeeNameZH').value = nameZH;
+            document.getElementById('employeeCode').value = emp.code;
+            document.getElementById('employeeCode').disabled = true; // Cannot change staff code
+            document.getElementById('employeeEmail').value = emp.email || '';
+            document.getElementById('employeeDepartment').value = emp.department === 'Transportation' ? 'TRANS' : 
+                                                                   emp.department === 'Warehouse' ? 'WAREH' : 'OFFICE';
+            document.getElementById('employeePosition').value = emp.position || '';
+            document.getElementById('employeeMobile').value = emp.mobile || '';
+            document.getElementById('employeeType').value = emp.employType || '';
+            document.getElementById('employeeRole').value = emp.status === 'admin' ? 'Admin' : 'Employee';
+            document.getElementById('employeeStatus').value = emp.status === 'active' ? '1' : '0';
+            
+            document.getElementById('employeeModal').classList.remove('hidden');
+        }
+
+        // Toggle employee status (activate/deactivate)
+        function toggleEmployeeStatus(id) {
+            const emp = employees.find(e => e.id === id);
+            if (!emp) return;
+
+            const newStatus = emp.status === 'active' ? 'inactive' : 'active';
+            const action = newStatus === 'active' ? 'activate' : 'deactivate';
+            
+            if (confirm(`Are you sure you want to ${action} ${emp.name}?`)) {
+                emp.status = newStatus;
+                // In production: PUT /api/admin/employees/${emp.code}/status with { isActive: newStatus === 'active' }
+                console.log(`Employee ${emp.code} status changed to ${newStatus}`);
+                renderEmployees();
+                showAlert(`Employee ${action}d successfully!`, 'success');
+            }
+        }
+
+        // Form submission
+        document.getElementById('employeeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const mode = this.dataset.mode;
+            const nameEN = document.getElementById('employeeNameEN').value;
+            const nameZH = document.getElementById('employeeNameZH').value;
+            const code = document.getElementById('employeeCode').value;
+            
+            if (mode === 'add') {
+                // In production: POST /api/admin/employees
+                showAlert(`Employee "${nameEN} (${nameZH})" added successfully!`, 'success');
+            } else {
+                // In production: PUT /api/admin/employees/${code}
+                showAlert(`Employee "${nameEN} (${nameZH})" updated successfully!`, 'success');
+            }
+            
+            closeEmployeeModal();
+            
+            // Refresh list (in production, refetch from API)
+            setTimeout(() => {
+                filterEmployees();
+            }, 500);
+        });
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('username');
+            localStorage.removeItem('rememberMe');
+        }
+
+        // Alert function
+        function showAlert(message, type) {
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                info: 'bg-blue-500'
+            };
+
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg ${colors[type] || colors.info} text-white text-sm font-medium`;
+            alertDiv.textContent = message;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html> 

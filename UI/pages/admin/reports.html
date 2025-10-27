@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<!-- Admin Reports page for the Employee Leave System -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Employee Leave System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body class="bg-gray-100">
+    <div class="admin-layout">
+        <!-- Admin Sidebar -->
+        <div id="sidebarContainer"></div>
+
+        <!-- Admin Content -->
+        <div class="admin-content">
+            <!-- Admin Header -->
+            <div id="headerContainer"></div>
+
+            <!-- Admin Main Content -->
+            <main class="admin-main">
+                <!-- Report filters -->
+                <div class="admin-card mb-6">
+                    <div class="flex flex-col space-y-3">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Report Type</label>
+                                <select id="report-type" class="w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                                    <option value="leave-usage">Leave Usage</option>
+                                    <option value="leave-balances">Leave Balances</option>
+                                    <option value="department-summary">Department Summary</option>
+                                    <option value="approval-times">Approval Times</option>
+                                    <option value="absence-trends">Absence Trends</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                                <select id="department" class="w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                                    <option value="all">All Departments</option>
+                                    <option value="engineering">Engineering</option>
+                                    <option value="marketing">Marketing</option>
+                                    <option value="finance">Finance</option>
+                                    <option value="hr">HR</option>
+                                    <option value="sales">Sales</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+                                <select id="date-range" class="w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                                    <option value="this-month">This Month</option>
+                                    <option value="last-month">Last Month</option>
+                                    <option value="last-quarter">Last Quarter</option>
+                                    <option value="this-year">This Year</option>
+                                    <option value="last-year">Last Year</option>
+                                    <option value="custom">Custom Range</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Format</label>
+                                <select id="format" class="w-full border-gray-300 rounded-md shadow-sm p-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                                    <option value="table">Table</option>
+                                    <option value="chart">Chart</option>
+                                    <option value="both">Table & Chart</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <button onclick="generateReport()" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 font-bold shadow-md">
+                                Generate Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report content -->
+                <div class="admin-card mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-medium">Leave Usage Report - All Departments</h3>
+                        <div>
+                            <button class="text-[#00AFB9] mr-3">
+                                <i class="fas fa-download mr-1"></i> Export
+                            </button>
+                            <button class="text-[#00AFB9]">
+                                <i class="fas fa-print mr-1"></i> Print
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Chart -->
+                    <div class="border rounded-lg p-4 mb-4">
+                        <!-- Placeholder for a chart -->
+                        <div class="flex justify-center items-center h-52 bg-gray-50 rounded">
+                            <!-- This would be a real chart in a production app -->
+                            <div class="flex space-x-2">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-12 bg-[#00AFB9] rounded-t" style="height: 60px;"></div>
+                                    <span class="text-xs mt-1">Jan</span>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-12 bg-[#00AFB9] rounded-t" style="height: 40px;"></div>
+                                    <span class="text-xs mt-1">Feb</span>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-12 bg-[#00AFB9] rounded-t" style="height: 70px;"></div>
+                                    <span class="text-xs mt-1">Mar</span>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-12 bg-[#00AFB9] rounded-t" style="height: 90px;"></div>
+                                    <span class="text-xs mt-1">Apr</span>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-12 bg-[#00AFB9] rounded-t" style="height: 100px;"></div>
+                                    <span class="text-xs mt-1">May</span>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-12 bg-[#00AFB9] rounded-t" style="height: 120px;"></div>
+                                    <span class="text-xs mt-1">Jun</span>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-12 bg-[#00AFB9] rounded-t" style="height: 80px;"></div>
+                                    <span class="text-xs mt-1">Jul</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Department
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Annual Leave
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Sick Leave
+                                    </th>
+                                    
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Total
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Engineering</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">45 days</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">12 days</td>
+                                    
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">65 days</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Marketing</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">32 days</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">7 days</td>
+                                    
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">44 days</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Finance</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">28 days</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">5 days</td>
+                                    
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">36 days</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">HR</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">22 days</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">4 days</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2 days</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">28 days</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Sales</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">36 days</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">9 days</td>
+                                    
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">51 days</td>
+                                </tr>
+                                <tr class="bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">Total</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">163 days</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">37 days</td>
+                                    
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">224 days</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Saved Reports -->
+                <div class="admin-card">
+                    <h3 class="font-medium mb-4">Saved Reports</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center p-3 border rounded hover:bg-gray-50 cursor-pointer">
+                            <div>
+                                <h4 class="font-medium">Monthly Leave Summary</h4>
+                                <p class="text-xs text-gray-500">Generated on July 20, 2023</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="text-[#00AFB9]">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="text-[#00AFB9]">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="text-red-600">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center p-3 border rounded hover:bg-gray-50 cursor-pointer">
+                            <div>
+                                <h4 class="font-medium">Q2 Department Comparison</h4>
+                                <p class="text-xs text-gray-500">Generated on July 15, 2023</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="text-[#00AFB9]">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="text-[#00AFB9]">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="text-red-600">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center p-3 border rounded hover:bg-gray-50 cursor-pointer">
+                            <div>
+                                <h4 class="font-medium">Annual Leave Forecast</h4>
+                                <p class="text-xs text-gray-500">Generated on July 1, 2023</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="text-[#00AFB9]">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="text-[#00AFB9]">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="text-red-600">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="../../js/components.js"></script>
+    <script src="../../js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set a flag to indicate admin view for proper redirects
+            localStorage.setItem('isAdmin', 'true');
+            
+            // Insert admin sidebar
+            document.getElementById('sidebarContainer').innerHTML = getAdminSidebar();
+            
+            // Insert admin header
+            document.getElementById('headerContainer').innerHTML = getAdminHeader('Reports');
+            
+            // Update active navigation state
+            updateNavActiveState();
+            
+            // Check desktop layout
+            checkResponsiveLayout();
+            
+            // Check if opened in desktop view
+            checkDesktopView();
+        });
+        
+        // Generate report function
+        function generateReport() {
+            const reportType = document.getElementById('report-type').value;
+            const department = document.getElementById('department').value;
+            const dateRange = document.getElementById('date-range').value;
+            const format = document.getElementById('format').value;
+            
+            // In a real app, this would send a request to generate the report
+            alert(`Generating ${reportType} report for ${department} (${dateRange}) in ${format} format`);
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<!-- 
+    Blackout Dates Management - HR Leave Management System
+    Description: Admin page for managing blackout dates (禁止請假日期)
+    Features:
+    - View all blackout dates
+    - Add manual blackout dates with bilingual reasons
+    - Auto-generate from holidays (day before holiday)
+    - Delete blackout dates
+    - Calendar view of blackout dates
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackout Dates - HR Leave Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <i class="fas fa-calendar-check text-[#00AFB9] text-2xl mr-2"></i>
+                <span class="admin-logo">HR System</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="sidebar-nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="approve-leaves.html" class="sidebar-nav-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Approve Leaves</span>
+                </a>
+                <a href="manage-employees.html" class="sidebar-nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Manage Employees</span>
+                </a>
+                <a href="compensatory-leave.html" class="sidebar-nav-item">
+                    <i class="fas fa-plus-circle"></i>
+                    <span data-i18n="admin.compensatory">Compensatory Leave (補假/扣假)</span>
+                </a>
+                <a href="leave-settings.html" class="sidebar-nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Leave Settings</span>
+                </a>
+                <a href="blackout-dates.html" class="sidebar-nav-item active">
+                    <i class="fas fa-ban"></i>
+                    <span data-i18n="admin.blackoutDates">Blackout Dates (禁止請假日期)</span>
+                </a>
+                <a href="reports.html" class="sidebar-nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+                
+                <div class="mt-auto pt-4 border-t border-white border-opacity-10">
+                    <a href="../login.html" onclick="logout()" class="sidebar-nav-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="admin-content">
+            <!-- Top Header -->
+            <header class="admin-header">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold" data-i18n="admin.blackoutManagement">Blackout Dates Management (禁止請假日期管理)</h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <!-- Language Switcher -->
+                    <div class="lang-switcher relative">
+                        <div class="flex items-center cursor-pointer" onclick="toggleLangDropdown()">
+                            <i class="fas fa-globe text-white"></i>
+                            <span class="current-lang ml-1 text-sm" id="currentLangText">EN</span>
+                        </div>
+                        <div class="dropdown-menu" id="langDropdown">
+                            <div class="dropdown-item" data-lang="en" onclick="switchLanguage('en')">English</div>
+                            <div class="dropdown-item" data-lang="zh" onclick="switchLanguage('zh')">繁體中文</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Admin Profile -->
+                    <div class="flex items-center">
+                        <div class="text-right mr-3">
+                            <p class="text-sm font-medium text-white">Administrator</p>
+                            <p class="text-xs text-white opacity-80">admin</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
+                            <i class="fas fa-user-shield text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="p-6">
+                <!-- Info Banner -->
+                <div class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-500 mt-0.5 mr-3 text-xl"></i>
+                        <div>
+                            <h3 class="font-bold text-blue-900 mb-1">What are Blackout Dates?</h3>
+                            <p class="text-sm text-blue-700">
+                                Blackout dates are days when employees <strong>cannot</strong> apply for leave. 
+                                By default, the day before each public holiday is a blackout date. 
+                                You can add custom blackout dates or auto-generate them from holidays.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <button onclick="showAddModal()" 
+                        class="bg-[#00AFB9] hover:bg-[#009ba3] text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center">
+                        <i class="fas fa-plus-circle mr-2"></i>
+                        Add Blackout Date
+                    </button>
+                    <button onclick="showAutoGenerateModal()" 
+                        class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center">
+                        <i class="fas fa-magic mr-2"></i>
+                        Auto-Generate from Holidays
+                    </button>
+                    <button onclick="exportBlackoutDates()" 
+                        class="bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center">
+                        <i class="fas fa-file-export mr-2"></i>
+                        Export List
+                    </button>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white p-5 rounded-lg shadow-md">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-600 text-sm">Total Blackout Dates</p>
+                                <p class="text-3xl font-bold text-[#00AFB9]" id="totalBlackoutDates">12</p>
+                            </div>
+                            <div class="bg-red-100 p-3 rounded-full">
+                                <i class="fas fa-ban text-red-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow-md">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-600 text-sm">This Month</p>
+                                <p class="text-3xl font-bold text-yellow-600" id="thisMonthBlackoutDates">2</p>
+                            </div>
+                            <div class="bg-yellow-100 p-3 rounded-full">
+                                <i class="fas fa-calendar-alt text-yellow-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow-md">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-600 text-sm">Upcoming</p>
+                                <p class="text-3xl font-bold text-blue-600" id="upcomingBlackoutDates">5</p>
+                            </div>
+                            <div class="bg-blue-100 p-3 rounded-full">
+                                <i class="fas fa-calendar-day text-blue-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blackout Dates Table -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="p-5 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-lg font-bold text-gray-800">Blackout Dates List</h2>
+                            <div class="flex gap-2">
+                                <select id="yearFilter" onchange="filterBlackoutDates()"
+                                    class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                                    <option value="all">All Years</option>
+                                    <option value="2025" selected>2025</option>
+                                    <option value="2026">2026</option>
+                                </select>
+                                <input type="text" id="searchBox" placeholder="Search..." onkeyup="filterBlackoutDates()"
+                                    class="px-3 py-2 border border-gray-300 rounded-lg text-sm w-48">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Day</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason (EN)</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason (ZH)</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created By</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="blackoutDatesTable" class="bg-white divide-y divide-gray-200">
+                                <!-- Sample data - in production, load from API -->
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">2025-10-20</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Monday</td>
+                                    <td class="px-6 py-4 text-sm text-gray-900">Day before National Day</td>
+                                    <td class="px-6 py-4 text-sm text-gray-900">國慶節前一天</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Admin</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button onclick="deleteBlackoutDate(1)" class="text-red-600 hover:text-red-900">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">2025-10-31</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Friday</td>
+                                    <td class="px-6 py-4 text-sm text-gray-900">Year-end inventory</td>
+                                    <td class="px-6 py-4 text-sm text-gray-900">年終盤點</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Admin</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button onclick="deleteBlackoutDate(2)" class="text-red-600 hover:text-red-900">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">2025-11-14</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Friday</td>
+                                    <td class="px-6 py-4 text-sm text-gray-900">Day before Holiday</td>
+                                    <td class="px-6 py-4 text-sm text-gray-900">假日前一天</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">System</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button onclick="deleteBlackoutDate(3)" class="text-red-600 hover:text-red-900">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">2025-12-24</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Wednesday</td>
+                                    <td class="px-6 py-4 text-sm text-gray-900">Day before Christmas</td>
+                                    <td class="px-6 py-4 text-sm text-gray-900">聖誕節前一天</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">System</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button onclick="deleteBlackoutDate(4)" class="text-red-600 hover:text-red-900">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                        <p class="text-sm text-gray-600">
+                            Showing <strong>4</strong> of <strong>12</strong> blackout dates
+                        </p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add Blackout Date Modal -->
+    <div id="addModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-bold text-gray-900">Add Blackout Date</h3>
+            </div>
+            <form id="addBlackoutForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Date <span class="text-red-500">*</span>
+                    </label>
+                    <input type="date" id="blackoutDate" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Reason (English) <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="reasonEN" required maxlength="200"
+                        placeholder="e.g., Day before holiday"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Reason (Traditional Chinese) <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="reasonZH" required maxlength="200"
+                        placeholder="例如：假日前一天"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                </div>
+                <div class="flex gap-2 pt-4">
+                    <button type="button" onclick="closeAddModal()"
+                        class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="flex-1 px-4 py-2 bg-[#00AFB9] text-white rounded-lg hover:bg-[#009ba3]">
+                        Add Blackout Date
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Auto-Generate Modal -->
+    <div id="autoGenerateModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-bold text-gray-900">Auto-Generate Blackout Dates</h3>
+            </div>
+            <div class="p-6">
+                <p class="text-sm text-gray-600 mb-4">
+                    This will automatically create blackout dates for the day before each public holiday in the selected year.
+                </p>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Year <span class="text-red-500">*</span>
+                    </label>
+                    <select id="autoGenerateYear"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
+                        <option value="2025" selected>2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                    </select>
+                </div>
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+                    <p class="text-xs text-yellow-700">
+                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                        Existing blackout dates will not be duplicated.
+                    </p>
+                </div>
+                <div class="flex gap-2">
+                    <button type="button" onclick="closeAutoGenerateModal()"
+                        class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button onclick="autoGenerateBlackoutDates()"
+                        class="flex-1 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">
+                        <i class="fas fa-magic mr-1"></i>
+                        Generate
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/app.js"></script>
+    <script>
+        // Check if logged in as admin
+        document.addEventListener('DOMContentLoaded', function() {
+            const userRole = localStorage.getItem('userRole');
+            if (userRole !== 'admin') {
+                window.location.href = '../login.html';
+            }
+        });
+
+        // Show/hide modals
+        function showAddModal() {
+            document.getElementById('addModal').classList.remove('hidden');
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('blackoutDate').setAttribute('min', today);
+        }
+
+        function closeAddModal() {
+            document.getElementById('addModal').classList.add('hidden');
+            document.getElementById('addBlackoutForm').reset();
+        }
+
+        function showAutoGenerateModal() {
+            document.getElementById('autoGenerateModal').classList.remove('hidden');
+        }
+
+        function closeAutoGenerateModal() {
+            document.getElementById('autoGenerateModal').classList.add('hidden');
+        }
+
+        // Add blackout date
+        document.getElementById('addBlackoutForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const blackoutDate = document.getElementById('blackoutDate').value;
+            const reasonEN = document.getElementById('reasonEN').value;
+            const reasonZH = document.getElementById('reasonZH').value;
+
+            // In production, call API: POST /api/admin/blackout-dates
+            console.log('Adding blackout date:', { blackoutDate, reasonEN, reasonZH });
+
+            showAlert('Blackout date added successfully!', 'success');
+            closeAddModal();
+            
+            // Reload table (in production, refresh from API)
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        });
+
+        // Auto-generate blackout dates
+        function autoGenerateBlackoutDates() {
+            const year = document.getElementById('autoGenerateYear').value;
+
+            // In production, call API: POST /api/admin/blackout-dates/generate
+            console.log('Auto-generating blackout dates for year:', year);
+
+            showAlert(`Generating blackout dates for ${year}...`, 'success');
+            closeAutoGenerateModal();
+
+            // Reload table after 2 seconds (in production, after API call)
+            setTimeout(() => {
+                showAlert(`5 blackout dates generated for ${year}`, 'success');
+                location.reload();
+            }, 2000);
+        }
+
+        // Delete blackout date
+        function deleteBlackoutDate(id) {
+            if (!confirm('Are you sure you want to delete this blackout date?')) {
+                return;
+            }
+
+            // In production, call API: DELETE /api/admin/blackout-dates/:id
+            console.log('Deleting blackout date:', id);
+
+            showAlert('Blackout date deleted successfully!', 'success');
+
+            // Reload table (in production, refresh from API)
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        }
+
+        // Filter blackout dates
+        function filterBlackoutDates() {
+            const year = document.getElementById('yearFilter').value;
+            const search = document.getElementById('searchBox').value.toLowerCase();
+
+            // In production, call API with filters
+            console.log('Filtering:', { year, search });
+        }
+
+        // Export blackout dates
+        function exportBlackoutDates() {
+            // In production, call API to export CSV/Excel
+            console.log('Exporting blackout dates...');
+            showAlert('Export feature coming soon!', 'success');
+        }
+
+        // Logout
+        function logout() {
+            localStorage.clear();
+            window.location.href = '../login.html';
+        }
+
+        // Alert function
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `fixed top-20 right-6 z-50 px-6 py-3 rounded-lg shadow-lg ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white text-sm font-medium`;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check' : 'times'}-circle mr-2"></i>${message}`;
+            document.body.appendChild(alertDiv);
+
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+

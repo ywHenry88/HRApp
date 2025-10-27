@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<!-- 
+    Employee Dashboard - HR Leave Management System
+    Description: Mobile-first employee dashboard with leave balance and calendar
+    Features:
+    - Real-time leave balance display (Annual, Sick, Personal, Study)
+    - Pending requests summary
+    - Team calendar view with month navigation
+    - Quick action buttons
+    - Bilingual support (EN/繁體中文)
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - HR Leave Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+    <div class="page-container">
+        <!-- Top Header with Language Switcher -->
+        <div class="top-header">
+            <div class="flex items-center">
+                <i class="fas fa-home text-white mr-2"></i>
+                <h1 class="text-lg font-bold" data-i18n="dashboard.title">Home</h1>
+            </div>
+            <div class="header-right">
+                <!-- Language Switcher -->
+                <div class="lang-switcher relative">
+                    <div class="flex items-center cursor-pointer" onclick="toggleLangDropdown()">
+                        <i class="fas fa-globe text-white"></i>
+                        <span class="current-lang ml-1 text-sm" id="currentLangText">EN</span>
+                    </div>
+                    <div class="dropdown-menu" id="langDropdown">
+                        <div class="dropdown-item" data-lang="en" onclick="switchLanguage('en')">
+                            English
+                        </div>
+                        <div class="dropdown-item" data-lang="zh" onclick="switchLanguage('zh')">
+                            繁體中文
+                        </div>
+                    </div>
+                </div>
+                <!-- User Profile Icon -->
+                <div class="relative">
+                    <button onclick="toggleProfileMenu()" class="flex items-center focus:outline-none">
+                        <div class="w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
+                            <i class="fas fa-user text-white text-sm"></i>
+                        </div>
+                    </button>
+                    <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50" id="profileMenu">
+                        <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-user mr-2"></i><span data-i18n="nav.profile">Profile</span>
+                        </a>
+                        <a href="#" onclick="logout()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-sign-out-alt mr-2"></i><span data-i18n="nav.logout">Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <main class="page-content p-4">
+            <!-- Welcome Section -->
+            <div class="mb-6">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-lg font-medium mb-2">
+                        <span data-i18n="dashboard.welcome">Welcome</span>, <span id="employeeName">Wong Pak Kun (黃柏根)</span> <span id="employeeCode" class="text-gray-600">L003</span>
+                    </h2>
+                    <p class="text-sm text-gray-600" id="currentDate">Monday, October 20, 2025</p>
+                    <p class="text-xs text-gray-500 mt-1"><i class="fas fa-database mr-1"></i>From SQL Server tb_Users</p>
+                </div>
+            </div>
+
+            <!-- Leave Balance Section -->
+            <div class="mb-6">
+                <div class="bg-white p-5 rounded-lg shadow-md">
+                    <h3 class="text-sm font-medium text-[#00AFB9] mb-4" data-i18n="dashboard.leaveBalance">Leave Balance</h3>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <!-- Annual Leave Card -->
+                        <div class="p-3 rounded-lg border border-gray-200 bg-[rgba(0,175,185,0.05)] shadow-sm hover:shadow transition-shadow">
+                            <div class="flex items-center mb-2">
+                                <div class="w-8 h-8 rounded-full bg-[rgba(0,175,185,0.15)] flex items-center justify-center mr-2">
+                                    <i class="fas fa-calendar-alt text-[#00AFB9]"></i>
+                                </div>
+                                <span class="text-xs text-gray-700" data-i18n="leave.annual">Annual Leave</span>
+                            </div>
+                            <div class="flex items-baseline">
+                                <span id="annualRemaining" class="text-2xl font-bold text-[#00AFB9]">--</span>
+                                <span class="text-xs text-gray-500 ml-1">/ <span id="annualTotal">--</span> days</span>
+                            </div>
+                            <div class="mt-1 text-[11px] text-gray-600">
+                                <span data-i18n="leave.breakdown">Breakdown</span>:
+                                <span id="annualDays">--</span>
+                                + <span id="carryForward">--</span>
+                                + <span id="compDays">--</span>
+                                − <span id="annualUsed">--</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Sick Leave Card -->
+                        <div class="p-3 rounded-lg border border-gray-200 bg-[rgba(255,107,107,0.05)] shadow-sm hover:shadow transition-shadow">
+                            <div class="flex items-center mb-2">
+                                <div class="w-8 h-8 rounded-full bg-[rgba(255,107,107,0.15)] flex items-center justify-center mr-2">
+                                    <i class="fas fa-procedures text-[#FF6B6B]"></i>
+                                </div>
+                                <span class="text-xs text-gray-700" data-i18n="leave.sick">Sick Leave</span>
+                            </div>
+                            <div class="flex items-baseline">
+                                <span class="text-2xl font-bold text-[#FF6B6B]">8</span>
+                                <span class="text-xs text-gray-500 ml-1">/ 10 days</span>
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
+                    <div class="mt-3 p-2 bg-blue-50 border border-blue-200 rounded text-[12px] text-blue-800">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Annual leave has no expiry (unlimited carry-forward). Split/pay-in-lieu are handled case-by-case by Admin.
+                        <br/>
+                        年假不設到期（可無限期結轉）。分拆／以薪代假由管理員逐案處理。
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Requests Summary -->
+            <div class="mb-6">
+                <div class="bg-white p-5 rounded-lg shadow-md">
+                    <h3 class="text-sm font-medium text-[#00AFB9] mb-2" data-i18n="dashboard.pendingRequests">Pending Requests</h3>
+                    <div class="flex items-end justify-between">
+                        <div>
+                            <span class="text-3xl font-bold text-gray-800">2</span>
+                            <p class="text-xs text-gray-500 mt-1" data-i18n="dashboard.awaitingApproval">Awaiting Approval</p>
+                        </div>
+                        <a href="leave-history.html" class="text-sm text-[#00AFB9] hover:text-[#009ba3] flex items-center">
+                            <span data-i18n="dashboard.viewAll">View all</span> <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="mb-6">
+                <div class="grid grid-cols-2 gap-3">
+                    <a href="leave-request-multi.html" class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-lg shadow-lg flex flex-col items-center justify-center transition-colors">
+                        <i class="fas fa-calendar-plus text-2xl mb-2"></i>
+                        <span class="text-sm font-bold" data-i18n="dashboard.requestLeave">Request Leave</span>
+                    </a>
+                    <a href="leave-history.html" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 p-4 rounded-lg shadow-md flex flex-col items-center justify-center transition-colors">
+                        <i class="fas fa-history text-2xl mb-2 text-[#00AFB9]"></i>
+                        <span class="text-sm font-medium" data-i18n="dashboard.viewHistory">View History</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Team Schedule Calendar -->
+            <div class="mb-6">
+                <div class="bg-white p-5 rounded-lg shadow-md">
+                    <h3 class="text-sm font-medium text-[#00AFB9] mb-4" data-i18n="dashboard.teamSchedule">Team Schedule</h3>
+                    
+                    <!-- Month Picker -->
+                    <div class="month-picker">
+                        <div class="month-picker-title" id="currentMonth">October 2025</div>
+                        <div class="month-picker-nav">
+                            <button class="month-picker-btn" onclick="changeMonth(-1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="month-picker-btn" onclick="changeMonth(1)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Calendar Table -->
+                    <div class="overflow-x-auto">
+                        <table class="schedule-calendar">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="calendar.sun">Sun</th>
+                                    <th data-i18n="calendar.mon">Mon</th>
+                                    <th data-i18n="calendar.tue">Tue</th>
+                                    <th data-i18n="calendar.wed">Wed</th>
+                                    <th data-i18n="calendar.thu">Thu</th>
+                                    <th data-i18n="calendar.fri">Fri</th>
+                                    <th data-i18n="calendar.sat">Sat</th>
+                                </tr>
+                            </thead>
+                            <tbody id="calendarBody">
+                                <!-- Calendar will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="active">
+                <i class="fas fa-home"></i>
+                <span data-i18n="nav.home">Home</span>
+            </a>
+            <a href="leave-request-multi.html">
+                <i class="fas fa-calendar-plus"></i>
+                <span data-i18n="nav.request">Request</span>
+            </a>
+            <a href="leave-history.html">
+                <i class="fas fa-history"></i>
+                <span data-i18n="nav.history">History</span>
+            </a>
+            <a href="profile.html">
+                <i class="fas fa-user"></i>
+                <span data-i18n="nav.profile">Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="../../js/app.js"></script>
+    <script>
+        // Profile menu toggle
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Close profile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('profileMenu');
+            const target = event.target;
+            if (!target.closest('.relative') && !menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+            }
+        });
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('username');
+                localStorage.removeItem('rememberMe');
+                window.location.href = '../login.html';
+            }
+        }
+
+        // Initialize current date
+        function initializeDate() {
+            const dateElement = document.getElementById('currentDate');
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateElement.textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        // Calendar functions
+        let currentCalendarMonth = new Date().getMonth();
+        let currentCalendarYear = new Date().getFullYear();
+
+        function generateCalendar(month, year) {
+            const calendarBody = document.getElementById('calendarBody');
+            calendarBody.innerHTML = '';
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Sample leave data (in production, this would come from API)
+            const leaveData = {
+                '2025-10-15': [{ name: '徐潔琛', type: 'annual' }],
+                '2025-10-16': [{ name: '徐潔琛', type: 'annual' }, { name: '鄭國峰', type: 'sick' }],
+                '2025-10-22': [{ name: '李嘉欣', type: 'personal' }],
+                '2025-10-23': [{ name: '李嘉欣', type: 'personal' }]
+            };
+
+            // Holidays (from 1823 JSON, loaded at runtime)
+            // Use window.__dashHolidays populated by loader
+
+            let date = 1;
+            let nextMonthDate = 1;
+
+            for (let i = 0; i < 6; i++) {
+                const row = document.createElement('tr');
+
+                for (let j = 0; j < 7; j++) {
+                    const cell = document.createElement('td');
+
+                    if (i === 0 && j < firstDay) {
+                        // Empty cells before month starts
+                        cell.classList.add('text-gray-300');
+                        const prevMonthDays = new Date(year, month, 0).getDate();
+                        cell.innerHTML = `<span class="date-number">${prevMonthDays - firstDay + j + 1}</span>`;
+                    } else if (date > daysInMonth) {
+                        // Empty cells after month ends
+                        cell.classList.add('text-gray-300');
+                        cell.innerHTML = `<span class="date-number">${nextMonthDate}</span>`;
+                        nextMonthDate++;
+                    } else {
+                        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+                        
+                        cell.innerHTML = `<span class="date-number">${date}</span>`;
+
+                        // Check if holiday (fast year map)
+                        const lang = (typeof currentLang !== 'undefined' && currentLang === 'zh') ? 'zh' : 'en';
+                        const hname = (typeof getHolidayNameFast === 'function') ? getHolidayNameFast(dateStr, lang) : null;
+                        if (hname) {
+                            cell.classList.add('holiday');
+                            cell.innerHTML += `<span class="special-day">${hname}</span>`;
+                        }
+
+                        // Check if anyone on leave
+                        if (leaveData[dateStr]) {
+                            const eventsHtml = leaveData[dateStr].map(leave => 
+                                `<div class="event-item event-${leave.type}">${leave.name}</div>`
+                            ).join('');
+                            cell.innerHTML += `<div class="event">${eventsHtml}</div>`;
+                        }
+
+                        // Highlight today
+                        const today = new Date();
+                        if (date === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                            cell.style.backgroundColor = '#f0fafb';
+                            cell.style.border = '2px solid #00AFB9';
+                        }
+
+                        date++;
+                    }
+
+                    row.appendChild(cell);
+                }
+
+                calendarBody.appendChild(row);
+
+                // Break if we've filled all days
+                if (date > daysInMonth && nextMonthDate > 7) {
+                    break;
+                }
+            }
+
+            // Update month title
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+        }
+
+        function changeMonth(delta) {
+            currentCalendarMonth += delta;
+            if (currentCalendarMonth > 11) {
+                currentCalendarMonth = 0;
+                currentCalendarYear++;
+            } else if (currentCalendarMonth < 0) {
+                currentCalendarMonth = 11;
+                currentCalendarYear--;
+            }
+            generateCalendar(currentCalendarMonth, currentCalendarYear);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if logged in
+            const username = localStorage.getItem('username');
+            if (!username) {
+                window.location.href = '../login.html';
+                return;
+            }
+
+            // Set employee name (Real data from SQL Server tb_Users)
+            // Default to L003 (Wong Pak Kun / 黃柏根) - exists in database
+            const staffCode = localStorage.getItem('staffCode') || 'L003';
+            const employeeName = staffCode === 'L003' ? 'Wong Pak Kun (黃柏根)' : 
+                                 staffCode === 'ADMIN001' ? 'System Administrator (系統管理員)' :
+                                 'Employee';
+            document.getElementById('employeeName').textContent = employeeName;
+            document.getElementById('employeeCode').textContent = staffCode;
+
+            // Initialize date
+            initializeDate();
+
+            // Render immediately using cached year map if present, then ensure load and re-render
+            try { generateCalendar(currentCalendarMonth, currentCalendarYear); } catch (_) {}
+            loadHolidaysThenRender();
+        });
+
+        async function loadHolidaysThenRender() {
+            try {
+                const lang = (typeof currentLang !== 'undefined' && currentLang === 'zh') ? 'zh' : 'en';
+                const list = await fetchHKHolidays(lang); // fetch only current language for speed
+                const map = {};
+                list.forEach(h => { map[h.date] = h.name; });
+
+                // Inject into closure for generateCalendar via window-scoped variable
+                window.__dashHolidays = map;
+            } catch (e) {
+                window.__dashHolidays = {};
+            }
+            // Re-render with holidays now available
+            generateCalendar(currentCalendarMonth, currentCalendarYear);
+        }
+
+        // Re-render when language changes to update holiday names
+        window.addEventListener('languageChanged', () => {
+            loadHolidaysThenRender();
+        });
+    </script>
+</body>
+</html>

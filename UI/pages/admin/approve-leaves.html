@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<!-- 
+    Approve Leaves - HR Leave Management System
+    Description: Admin page for reviewing and approving leave requests
+    Features:
+    - Filter by status, type, employee, department
+    - View detailed request information
+    - Approve/reject with comments
+    - Bulk operations (future)
+    - Search functionality
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approve Leaves - HR Leave Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <i class="fas fa-calendar-check text-[#00AFB9] text-2xl mr-2"></i>
+                <span class="admin-logo">HR System</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="sidebar-nav-item">
+                    <i class="fas fa-home"></i>
+                    <span data-i18n="admin.dashboard">Dashboard</span>
+                </a>
+                <a href="approve-leaves.html" class="sidebar-nav-item active">
+                    <i class="fas fa-check-circle"></i>
+                    <span data-i18n="admin.approveLeaves">Approve Leaves</span>
+                </a>
+                <a href="manage-employees.html" class="sidebar-nav-item">
+                    <i class="fas fa-users"></i>
+                    <span data-i18n="admin.manageEmployees">Manage Employees</span>
+                </a>
+                <a href="compensatory-leave.html" class="sidebar-nav-item">
+                    <i class="fas fa-plus-circle"></i>
+                    <span data-i18n="admin.compensatory">Compensatory Leave (補假/扣假)</span>
+                </a>
+                <a href="leave-settings.html" class="sidebar-nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span data-i18n="admin.settings">Leave Settings</span>
+                </a>
+                <a href="blackout-dates.html" class="sidebar-nav-item">
+                    <i class="fas fa-ban"></i>
+                    <span data-i18n="admin.blackoutDates">Blackout Dates (禁止請假日期)</span>
+                </a>
+                <a href="reports.html" class="sidebar-nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span data-i18n="admin.reports">Reports</span>
+                </a>
+                
+                <div class="mt-auto pt-4 border-t border-white border-opacity-10">
+                    <a href="../login.html" onclick="logout()" class="sidebar-nav-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span data-i18n="nav.logout">Logout</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="admin-content">
+            <!-- Top Header -->
+            <header class="admin-header">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold" data-i18n="admin.approveLeaves">Approve Leaves</h1>
+                    <span class="ml-3 px-3 py-1 bg-yellow-500 text-white text-xs font-medium rounded-full">
+                        <span id="pendingCount">8</span> Pending
+                    </span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <!-- Language Switcher -->
+                    <div class="lang-switcher relative">
+                        <div class="flex items-center cursor-pointer" onclick="toggleLangDropdown()">
+                            <i class="fas fa-globe text-white"></i>
+                            <span class="current-lang ml-1 text-sm" id="currentLangText">EN</span>
+                                </div>
+                        <div class="dropdown-menu" id="langDropdown">
+                            <div class="dropdown-item" data-lang="en" onclick="switchLanguage('en')">
+                                English
+                            </div>
+                            <div class="dropdown-item" data-lang="zh" onclick="switchLanguage('zh')">
+                                繁體中文
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Profile -->
+                    <div class="flex items-center">
+                        <div class="text-right mr-3">
+                            <p class="text-sm font-medium text-white">Administrator</p>
+                            <p class="text-xs text-white opacity-80">admin</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
+                            <i class="fas fa-user-shield text-white"></i>
+                        </div>
+                                </div>
+                            </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="admin-main">
+                <!-- Policy Notice: case-by-case handling and no-expiry carry-forward -->
+                <div class="admin-card mb-4 bg-blue-50 border border-blue-200">
+                    <p class="text-sm text-blue-900">
+                        <strong>Policy:</strong> Split and pay-in-lieu are handled case-by-case by Admin (no auto-enforcement). Annual leave has no expiry and carries forward indefinitely.<br/>
+                        <span class="text-[12px] text-blue-800">政策：年假分拆與以薪代假由管理員逐案處理（系統不自動強制）。年假不設到期且可無限期結轉。</span>
+                    </p>
+                </div>
+                <!-- Filters -->
+                <div class="admin-card mb-6">
+                    <div class="grid grid-cols-4 gap-4">
+                        <!-- Search -->
+                                <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="admin.search">Search</label>
+                            <input type="text" id="searchInput" placeholder="Employee name or code..."
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9] text-sm"
+                                oninput="filterRequests()">
+                                </div>
+                        
+                        <!-- Status Filter -->
+                                <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="admin.status">Status</label>
+                            <select id="statusFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9] text-sm" onchange="filterRequests()">
+                                <option value="all">All Status</option>
+                                <option value="pending" selected>Pending Only</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                                </div>
+                        
+                        <!-- Type Filter -->
+                                <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="admin.leaveType">Leave Type</label>
+                            <select id="typeFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9] text-sm" onchange="filterRequests()">
+                                <option value="all">All Types</option>
+                                <option value="annual">Annual Leave</option>
+                                <option value="sick">Sick Leave</option>
+                            </select>
+                                </div>
+                        
+                        <!-- Department Filter -->
+                                <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1" data-i18n="admin.department">Department</label>
+                            <select id="deptFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9] text-sm" onchange="filterRequests()">
+                                <option value="all">All Departments</option>
+                                <option value="transportation">Transportation</option>
+                                <option value="warehouse">Warehouse</option>
+                                <option value="office">Office</option>
+                            </select>
+                        </div>
+                                </div>
+                            </div>
+
+                <!-- Requests Table -->
+                <div class="admin-card">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 border-b-2 border-gray-200">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600">
+                                        <input type="checkbox" id="selectAll" class="rounded">
+                                    </th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600" data-i18n="admin.employee">Employee</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600" data-i18n="admin.type">Type</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600" data-i18n="admin.dates">Dates</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600" data-i18n="admin.days">Days</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600" data-i18n="admin.submitted">Submitted</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600" data-i18n="admin.status">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-600" data-i18n="admin.actions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="requestsTableBody">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                            </div>
+
+                    <!-- Empty State -->
+                    <div id="emptyState" class="hidden text-center py-12">
+                        <i class="fas fa-inbox text-gray-300 text-5xl mb-4"></i>
+                        <p class="text-gray-500" data-i18n="admin.noRequests">No leave requests found</p>
+                                </div>
+                            </div>
+            </main>
+                        </div>
+                    </div>
+
+    <!-- Request Detail Modal -->
+    <div id="detailModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full flex flex-col" style="max-height: 90vh;">
+            <!-- Modal Header (Fixed) -->
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 class="text-xl font-bold text-gray-800" data-i18n="admin.requestDetails">Leave Request Details</h3>
+                <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body (2-Column Layout) -->
+            <div class="p-4 overflow-y-auto flex-1">
+                <div class="grid grid-cols-2 gap-4">
+                    
+                    <!-- Left Column: Request Info & Actions -->
+                    <div class="space-y-3">
+                        <!-- Employee Info -->
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-600 mb-2" data-i18n="admin.employeeInfo">Employee Information</h4>
+                            <div class="bg-gray-50 p-2 rounded-lg text-xs space-y-1">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600" data-i18n="admin.name">Name:</span>
+                                    <span class="font-medium text-gray-800" id="modalEmployeeName">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600" data-i18n="admin.department">Department:</span>
+                                    <span class="font-medium text-gray-800" id="modalDepartment">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600" data-i18n="admin.position">Position:</span>
+                                    <span class="font-medium text-gray-800" id="modalPosition">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600" data-i18n="admin.currentBalance">Balance:</span>
+                                    <span class="font-medium text-[#00AFB9]" id="modalBalance">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Request Details -->
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-600 mb-2" data-i18n="admin.requestInfo">Request Information</h4>
+                            <div class="bg-gray-50 p-2 rounded-lg text-xs space-y-1">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600" data-i18n="admin.leaveType">Type:</span>
+                                    <span class="font-medium text-gray-800" id="modalType">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600" data-i18n="admin.duration">Duration:</span>
+                                    <span class="font-medium text-gray-800" id="modalDuration">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600" data-i18n="admin.totalDays">Days:</span>
+                                    <span class="font-medium text-gray-800" id="modalDays">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600" data-i18n="admin.submitted">Submitted:</span>
+                                    <span class="font-medium text-gray-800" id="modalSubmitted">-</span>
+                                </div>
+                            </div>
+                            <div class="mt-2 bg-blue-50 p-2 rounded text-xs">
+                                <p class="text-gray-600 mb-1" data-i18n="admin.reason">Reason:</p>
+                                <p class="text-gray-800" id="modalReason">-</p>
+                            </div>
+                        </div>
+
+                        <!-- Requested Dates Summary -->
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-600 mb-2">
+                                <i class="fas fa-user-clock text-blue-500 mr-1"></i>Employee Requested
+                            </h4>
+                            <div class="bg-gray-50 border border-blue-300 rounded-lg p-2">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-xs text-gray-600">Dates:</span>
+                                    <span class="text-xs font-bold text-blue-600"><span id="requestedDatesCount">0</span> dates</span>
+                                </div>
+                                <div id="requestedDatesList" class="text-xs text-gray-600 space-y-1 max-h-24 overflow-y-auto">
+                                    <!-- Populated by JavaScript -->
+                                </div>
+                                <div class="mt-1 pt-1 border-t border-gray-200 text-xs text-gray-600">
+                                    Working days: <span class="font-bold text-blue-600" id="requestedWorkingDays">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Admin Comments -->
+                        <div>
+                            <label for="adminComments" class="block text-sm font-medium text-gray-600 mb-1" data-i18n="admin.comments">Admin Comments</label>
+                            <textarea id="adminComments" rows="2" 
+                                class="w-full px-2 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9] text-xs"
+                                placeholder="Add comments..."></textarea>
+                        </div>
+
+                        <!-- Actions: simplified approve or reject only -->
+                        <div class="space-y-2">
+                            <button onclick="approveRequestSimple()" class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm">
+                                <i class="fas fa-check-circle mr-1"></i>
+                                <span>Approve</span>
+                            </button>
+                            <button onclick="rejectRequest()" class="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm">
+                                <i class="fas fa-times mr-1"></i>Reject
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Additional Information -->
+                    <div class="space-y-3">
+                        
+                        <!-- Leave Balance Breakdown -->
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-600 mb-2">
+                                <i class="fas fa-chart-pie text-[#00AFB9] mr-1"></i>
+                                <span data-i18n="admin.leaveBalance">Leave Balance</span>
+                            </h4>
+                            <div class="bg-gradient-to-br from-[#00AFB9]/10 to-[#00AFB9]/5 p-3 rounded-lg border border-[#00AFB9]/20">
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="bg-white p-2 rounded text-center">
+                                        <div class="text-gray-600">Total</div>
+                                        <div class="text-lg font-bold text-[#00AFB9]" id="balanceTotal">20</div>
+                                        <div class="text-gray-500">days</div>
+                                    </div>
+                                    <div class="bg-white p-2 rounded text-center">
+                                        <div class="text-gray-600">Used</div>
+                                        <div class="text-lg font-bold text-orange-600" id="balanceUsed">5</div>
+                                        <div class="text-gray-500">days</div>
+                                    </div>
+                                    <div class="bg-white p-2 rounded text-center">
+                                        <div class="text-gray-600">Remaining</div>
+                                        <div class="text-lg font-bold text-green-600" id="balanceRemaining">15</div>
+                                        <div class="text-gray-500">days</div>
+                                    </div>
+                                    <div class="bg-white p-2 rounded text-center">
+                                        <div class="text-gray-600">After Approval</div>
+                                        <div class="text-lg font-bold text-blue-600" id="balanceAfter">12</div>
+                                        <div class="text-gray-500">days</div>
+                                    </div>
+                                </div>
+                                <!-- Balance breakdown details -->
+                                <div class="mt-2 pt-2 border-t border-[#00AFB9]/20 space-y-1 text-xs">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Entitlement:</span>
+                                        <span class="font-medium" id="balanceEntitlement">12 days</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Carry Forward:</span>
+                                        <span class="font-medium" id="balanceCarryForward">5 days</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Compensatory:</span>
+                                        <span class="font-medium" id="balanceCompensatory">3 days</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Team Calendar / Conflicts -->
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-600 mb-2">
+                                <i class="fas fa-users text-orange-500 mr-1"></i>
+                                <span data-i18n="admin.teamStatus">Team Status (Same Period)</span>
+                            </h4>
+                            <div class="bg-orange-50 border border-orange-200 rounded-lg p-2">
+                                <div id="teamStatus" class="space-y-1 text-xs max-h-32 overflow-y-auto">
+                                    <div class="flex items-center justify-between p-1 bg-white rounded">
+                                        <div class="flex items-center">
+                                            <div class="w-6 h-6 rounded-full bg-orange-200 flex items-center justify-center mr-2">
+                                                <span class="text-xs font-bold">陳</span>
+                                            </div>
+                                            <span class="text-gray-800">陳俊民 (L152)</span>
+                                        </div>
+                                        <span class="text-orange-600 text-xs">Nov 16-18</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-1 bg-white rounded">
+                                        <div class="flex items-center">
+                                            <div class="w-6 h-6 rounded-full bg-orange-200 flex items-center justify-center mr-2">
+                                                <span class="text-xs font-bold">黃</span>
+                                            </div>
+                                            <span class="text-gray-800">黃柏根 (L003)</span>
+                                        </div>
+                                        <span class="text-orange-600 text-xs">Nov 15-17</span>
+                                    </div>
+                                </div>
+                                <div class="mt-1 pt-1 border-t border-orange-200 text-xs text-orange-700">
+                                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                                    2 team members on leave during this period
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Leave History -->
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-600 mb-2">
+                                <i class="fas fa-history text-purple-500 mr-1"></i>
+                                <span data-i18n="admin.recentHistory">Recent Leave History</span>
+                            </h4>
+                            <div class="bg-purple-50 border border-purple-200 rounded-lg p-2">
+                                <div id="leaveHistory" class="space-y-1 text-xs max-h-28 overflow-y-auto">
+                                    <div class="flex justify-between p-1 bg-white rounded">
+                                        <span class="text-gray-800">Annual Leave</span>
+                                        <span class="text-purple-600">Oct 10-12 (3d)</span>
+                                    </div>
+                                    <div class="flex justify-between p-1 bg-white rounded">
+                                        <span class="text-gray-800">Sick Leave</span>
+                                        <span class="text-purple-600">Sep 5 (1d)</span>
+                                    </div>
+                                    <div class="flex justify-between p-1 bg-white rounded">
+                                        <span class="text-gray-800">Annual Leave</span>
+                                        <span class="text-purple-600">Aug 15-20 (6d)</span>
+                                    </div>
+                                </div>
+                                <div class="mt-1 pt-1 border-t border-purple-200 text-xs text-purple-700">
+                                    Total leaves in 2025: <span class="font-bold">10 days</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Policy & Guidelines -->
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-600 mb-2">
+                                <i class="fas fa-info-circle text-blue-500 mr-1"></i>
+                                <span data-i18n="admin.policyGuidelines">Policy Guidelines</span>
+                            </h4>
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-2 text-xs">
+                                <ul class="space-y-1 text-gray-700">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-600 mr-1 mt-0.5"></i>
+                                        <span>Sufficient balance available</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-600 mr-1 mt-0.5"></i>
+                                        <span>No blackout dates in range</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-exclamation-triangle text-orange-600 mr-1 mt-0.5"></i>
+                                        <span>High team absence during period</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-info text-blue-600 mr-1 mt-0.5"></i>
+                                        <span>Advance notice: 15 days ✓</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Quick Stats -->
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-600 mb-2">
+                                <i class="fas fa-chart-line text-green-500 mr-1"></i>
+                                <span data-i18n="admin.quickStats">Quick Stats (2025)</span>
+                            </h4>
+                            <div class="grid grid-cols-3 gap-1 text-xs">
+                                <div class="bg-green-50 p-2 rounded text-center">
+                                    <div class="text-green-600 font-bold text-base">10</div>
+                                    <div class="text-gray-600">Approved</div>
+                                </div>
+                                <div class="bg-yellow-50 p-2 rounded text-center">
+                                    <div class="text-yellow-600 font-bold text-base">2</div>
+                                    <div class="text-gray-600">Pending</div>
+                                </div>
+                                <div class="bg-red-50 p-2 rounded text-center">
+                                    <div class="text-red-600 font-bold text-base">1</div>
+                                    <div class="text-gray-600">Rejected</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- End Right Column -->
+
+                </div>
+                <!-- End 2-Column Grid -->
+            </div>
+            <!-- End Modal Body -->
+        </div>
+        <!-- End Modal Container -->
+    </div>
+    <!-- End Modal Backdrop -->
+
+    <script>
+        // Public holidays (loaded from 1823.gov.hk JSON)
+        let holidays = [];
+
+        // State (no calendar in simplified mode)
+        let requestedDatesSet = new Set(); // Dates employee requested
+        let currentRequestData = null; // Store current request data
+
+        // Initialize (populate requested dates list only)
+        function initializeApprovalView(requestDates) {
+            // Ensure holidays loaded once
+            if (!holidays || holidays.length === 0) {
+                ensureHolidaysLoaded().then(() => {
+                    holidays = Array.from(getHolidaySet());
+                    requestedDatesSet = new Set(requestDates);
+                    updateRequestedDatesList();
+                }).catch(() => {
+                    requestedDatesSet = new Set(requestDates);
+                    updateRequestedDatesList();
+                });
+                return;
+            }
+            requestedDatesSet = new Set(requestDates);
+            updateRequestedDatesList();
+        }
+
+        // Update requested dates list display
+        function updateRequestedDatesList() {
+            const list = document.getElementById('requestedDatesList');
+            const count = document.getElementById('requestedDatesCount');
+            const sortedDates = Array.from(requestedDatesSet).sort();
+            
+            count.textContent = sortedDates.length;
+            
+            if (sortedDates.length === 0) {
+                list.innerHTML = '<span class="text-gray-400">No dates requested</span>';
+                return;
+            }
+            
+            list.innerHTML = sortedDates.map(dateStr => {
+                const date = new Date(dateStr);
+                const dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()];
+                return `<div><i class="fas fa-calendar text-blue-500 mr-1"></i>${dateStr} (${dayName})</div>`;
+            }).join('');
+            
+            // Calculate requested working days
+            calculateRequestedWorkingDays();
+        }
+
+        // Calculate requested working days
+        function calculateRequestedWorkingDays() {
+            let workingDays = 0;
+            requestedDatesSet.forEach(dateStr => {
+                const date = new Date(dateStr);
+                const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+                const isHoliday = holidays.includes(dateStr);
+                if (!isWeekend && !isHoliday) {
+                    workingDays++;
+                }
+            });
+            document.getElementById('requestedWorkingDays').textContent = workingDays;
+        }
+
+        // Recalculate if language changed (no direct impact, but keep consistent UI)
+        window.addEventListener('languageChanged', () => {
+            updateRequestedDatesList();
+        });
+
+        // Removed calendar rendering in simplified mode
+
+        // Removed date toggling
+
+        // Removed approval counts
+
+        // Removed useRequestedDates
+
+        // Removed clearAllApprovedDates
+
+        // Removed month navigation
+
+        // Removed formatDateToString (not needed)
+
+        // Approve entire request
+        function approveRequestSimple() {
+            const comments = document.getElementById('adminComments').value;
+            // In production: PUT /api/admin/leaves/approve/:id with null approvedDates
+            console.log('Approving request:', { requestId: selectedRequestId, comments });
+            showAlert('Leave request approved', 'success');
+            setTimeout(() => {
+                closeDetailModal();
+                location.reload();
+            }, 1000);
+        }
+
+        // Approve all requested dates
+        function approveAllRequestedDates() {}
+
+        // Reject request
+        function rejectRequest() {
+            const comments = document.getElementById('adminComments').value;
+            
+            if (!comments) {
+                showAlert('Please provide a reason for rejection', 'error');
+                return;
+            }
+            
+            if (!confirm('Are you sure you want to reject this leave request?')) {
+                return;
+            }
+
+            // In production: PUT /api/admin/leaves/reject/:id
+            // Body: { comments }
+            console.log('Rejecting request:', { requestId: selectedRequestId, comments });
+
+            showAlert('Leave request rejected', 'success');
+            setTimeout(() => {
+                closeDetailModal();
+                location.reload();
+            }, 1500);
+        }
+
+        // Alert function
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `fixed top-20 right-6 z-50 px-6 py-3 rounded-lg shadow-lg ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white text-sm font-medium`;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check' : 'times'}-circle mr-2"></i>${message}`;
+            document.body.appendChild(alertDiv);
+
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+    </script>
+    <script src="../../js/app.js"></script>
+    <script>
+        // Sample leave requests data (v2.0: with requestedDates array)
+        const leaveRequests = [
+            { id: 1, employee: '林劍明', code: 'L888', department: 'Office', position: 'Specialist', type: 'annual', typeName: 'Annual Leave', startDate: '2025-11-15', endDate: '2025-11-19', days: 5, reason: 'Family vacation', status: 'pending', submittedDate: '2025-10-18', balance: '15/20', requestedDates: ['2025-11-15', '2025-11-16', '2025-11-17', '2025-11-18', '2025-11-19'] },
+            { id: 2, employee: '徐潔琛', code: 'E102', department: 'Transportation', position: 'Driver', type: 'sick', typeName: 'Sick Leave', startDate: '2025-10-22', endDate: '2025-10-23', days: 2, reason: 'Medical checkup', status: 'pending', submittedDate: '2025-10-20', balance: '8/10', requestedDates: ['2025-10-22', '2025-10-23'] },
+            
+            
+            { id: 5, employee: '鄧登輝', code: 'F408', department: 'Warehouse', position: 'Supervisor', type: 'annual', typeName: 'Annual Leave', startDate: '2025-10-30', endDate: '2025-10-31', days: 2, reason: 'Extended weekend', status: 'pending', submittedDate: '2025-10-19', balance: '12/20', requestedDates: ['2025-10-30', '2025-10-31'] },
+            { id: 6, employee: '朱志義', code: 'E201', department: 'Transportation', position: 'Dispatcher', type: 'annual', typeName: 'Annual Leave', startDate: '2025-11-05', endDate: '2025-11-08', days: 4, reason: 'Visit family', status: 'pending', submittedDate: '2025-10-17', balance: '10/20', requestedDates: ['2025-11-05', '2025-11-06', '2025-11-07', '2025-11-08'] },
+            { id: 7, employee: '王志祥', code: 'M501', department: 'Office', position: 'Coordinator', type: 'sick', typeName: 'Sick Leave', startDate: '2025-10-25', endDate: '2025-10-26', days: 2, reason: 'Flu', status: 'pending', submittedDate: '2025-10-20', balance: '7/10', requestedDates: ['2025-10-25', '2025-10-26'] },
+            
+        ];
+
+        let allRequests = [...leaveRequests];
+        let selectedRequestId = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if admin
+            const userRole = localStorage.getItem('userRole');
+            if (userRole !== 'admin') {
+                alert('Access denied. Admin privileges required.');
+                window.location.href = '../login.html';
+                return;
+            }
+
+            renderRequestsTable();
+        });
+
+        // Filter requests
+        function filterRequests() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const status = document.getElementById('statusFilter').value;
+            const type = document.getElementById('typeFilter').value;
+            const dept = document.getElementById('deptFilter').value;
+
+            const filtered = leaveRequests.filter(request => {
+                const matchSearch = search === '' || request.employee.toLowerCase().includes(search) || request.code.toLowerCase().includes(search);
+                const matchStatus = status === 'all' || request.status === status;
+                const matchType = type === 'all' || request.type === type;
+                const matchDept = dept === 'all' || request.department.toLowerCase() === dept.toLowerCase();
+                
+                return matchSearch && matchStatus && matchType && matchDept;
+            });
+
+            allRequests = filtered;
+            renderRequestsTable();
+        }
+
+        // Render requests table
+        function renderRequestsTable() {
+            const tbody = document.getElementById('requestsTableBody');
+            const emptyState = document.getElementById('emptyState');
+            const pendingCount = allRequests.filter(r => r.status === 'pending').length;
+            document.getElementById('pendingCount').textContent = pendingCount;
+
+            tbody.innerHTML = '';
+
+            if (allRequests.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+                    } else {
+                emptyState.classList.add('hidden');
+            }
+
+            allRequests.forEach(request => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-gray-100 hover:bg-gray-50 cursor-pointer';
+                row.onclick = () => showDetailModal(request.id);
+
+                const statusColors = {
+                    pending: { bg: 'bg-yellow-100', text: 'text-yellow-800', icon: 'clock' },
+                    approved: { bg: 'bg-green-100', text: 'text-green-800', icon: 'check-circle' },
+                    rejected: { bg: 'bg-red-100', text: 'text-red-800', icon: 'times-circle' }
+                };
+
+                const typeColors = {
+                    annual: '#00AFB9',
+                    sick: '#FF6B6B',
+                    personal: '#FFD166',
+                    study: '#06D6A0'
+                };
+
+                const statusStyle = statusColors[request.status];
+
+                row.innerHTML = `
+                    <td class="px-4 py-3" onclick="event.stopPropagation()">
+                        <input type="checkbox" class="rounded" data-id="${request.id}">
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center mr-2" style="background-color: ${typeColors[request.type]}20">
+                                <i class="fas fa-user text-sm" style="color: ${typeColors[request.type]}"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-800">${request.employee}</p>
+                                <p class="text-xs text-gray-500">${request.code}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="text-sm text-gray-700">${request.typeName}</span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="text-sm text-gray-700">
+                            ${formatDate(request.startDate)}
+                            <div class="text-xs text-gray-500">to ${formatDate(request.endDate)}</div>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="text-sm font-medium text-gray-800">${request.days}</span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="text-xs text-gray-600">${formatDate(request.submittedDate)}</span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="px-2 py-1 text-xs font-medium rounded-full ${statusStyle.bg} ${statusStyle.text}">
+                            <i class="fas fa-${statusStyle.icon} mr-1"></i>${request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3" onclick="event.stopPropagation()">
+                        ${request.status === 'pending' ? `
+                        <div class="flex gap-1">
+                            <button onclick="quickApprove(${request.id})" class="px-2 py-1 bg-green-500 hover:bg-green-600 text-white text-xs rounded transition-colors">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button onclick="quickReject(${request.id})" class="px-2 py-1 bg-red-500 hover:bg-red-600 text-white text-xs rounded transition-colors">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <button onclick="showDetailModal(${request.id})" class="px-2 py-1 bg-blue-500 hover:bg-blue-600 text-white text-xs rounded transition-colors">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        ` : '-'}
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Show detail modal
+        function showDetailModal(id) {
+            selectedRequestId = id;
+            const request = leaveRequests.find(r => r.id === id);
+            if (!request) return;
+
+            document.getElementById('modalEmployeeName').textContent = `${request.employee} (${request.code})`;
+            document.getElementById('modalDepartment').textContent = request.department;
+            document.getElementById('modalPosition').textContent = request.position;
+            document.getElementById('modalBalance').textContent = `${request.balance} days`;
+            document.getElementById('modalType').textContent = request.typeName;
+            document.getElementById('modalDuration').textContent = `${formatDate(request.startDate)} - ${formatDate(request.endDate)}`;
+            document.getElementById('modalDays').textContent = `${request.days} day${request.days > 1 ? 's' : ''}`;
+            document.getElementById('modalReason').textContent = request.reason || 'No reason provided';
+            document.getElementById('modalSubmitted').textContent = formatDate(request.submittedDate);
+            
+            // Initialize requested dates list (read-only)
+            const requestedDates = request.requestedDates || [];
+            initializeApprovalView(requestedDates);
+            
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        // Close detail modal
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+            document.getElementById('adminComments').value = '';
+            selectedRequestId = null;
+        }
+
+        // Approve from modal
+        function approveFromModal() {
+            if (!selectedRequestId) return;
+            
+            const comments = document.getElementById('adminComments').value;
+            if (confirm('Approve this leave request?')) {
+                // In production, call API
+                const index = leaveRequests.findIndex(r => r.id === selectedRequestId);
+                if (index !== -1) {
+                    leaveRequests[index].status = 'approved';
+                    filterRequests();
+                    closeDetailModal();
+                    showAlert('Leave request approved successfully!', 'success');
+                }
+            }
+        }
+
+        // Reject from modal
+        function rejectFromModal() {
+            if (!selectedRequestId) return;
+            
+            const comments = document.getElementById('adminComments').value;
+            if (!comments) {
+                showAlert('Please provide a reason for rejection', 'error');
+                return;
+            }
+            
+            if (confirm('Reject this leave request?')) {
+                // In production, call API
+                const index = leaveRequests.findIndex(r => r.id === selectedRequestId);
+                if (index !== -1) {
+                    leaveRequests[index].status = 'rejected';
+                    filterRequests();
+                    closeDetailModal();
+                    showAlert('Leave request rejected', 'success');
+                }
+            }
+        }
+
+        // Quick approve
+        function quickApprove(id) {
+            if (confirm('Approve this leave request?')) {
+                const index = leaveRequests.findIndex(r => r.id === id);
+                if (index !== -1) {
+                    leaveRequests[index].status = 'approved';
+                    filterRequests();
+                    showAlert('Approved successfully!', 'success');
+                }
+            }
+        }
+
+        // Quick reject
+        function quickReject(id) {
+            const reason = prompt('Please enter rejection reason:');
+            if (reason) {
+                const index = leaveRequests.findIndex(r => r.id === id);
+                if (index !== -1) {
+                    leaveRequests[index].status = 'rejected';
+                    filterRequests();
+                    showAlert('Rejected successfully', 'success');
+                }
+            }
+        }
+
+        // Format date
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('username');
+            localStorage.removeItem('rememberMe');
+        }
+
+        // Alert function
+        function showAlert(message, type) {
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                info: 'bg-blue-500'
+            };
+
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg ${colors[type] || colors.info} text-white text-sm font-medium`;
+            alertDiv.textContent = message;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html> 

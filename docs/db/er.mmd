@@ -1,0 +1,122 @@
+erDiagram
+    tb_Departments {
+        DepartmentID INT PK
+        DepartmentName_EN STRING
+        DepartmentName_ZH STRING
+        ManagerUserID INT FK
+        IsActive BIT
+        CreatedDate DATETIME
+        LastModifiedDate DATETIME
+    }
+
+    tb_Users {
+        UserID INT PK
+        Username STRING
+        PasswordHash STRING
+        FullName STRING
+        EmployeeCode STRING
+        Email STRING
+        DepartmentID INT FK
+        Position STRING
+        Role STRING
+        IsActive BIT
+        CreatedDate DATETIME
+        LastLogin DATETIME
+        LastModifiedDate DATETIME
+    }
+
+    tb_LeaveTypes {
+        LeaveTypeID INT PK
+        LeaveTypeName_EN STRING
+        LeaveTypeName_ZH STRING
+        DefaultDaysPerYear DECIMAL
+        RequiresApproval BIT
+        IsActive BIT
+        ColorCode STRING
+        IconName STRING
+        CreatedDate DATETIME
+        LastModifiedDate DATETIME
+    }
+
+    tb_LeaveBalances {
+        BalanceID INT PK
+        UserID INT FK
+        LeaveTypeID INT FK
+        Year INT
+        TotalDays DECIMAL
+        UsedDays DECIMAL
+        RemainingDays DECIMAL
+        LastUpdated DATETIME
+    }
+
+    tb_LeaveRequests {
+        RequestID INT PK
+        UserID INT FK
+        LeaveTypeID INT FK
+        RequestedDaysCount INT
+        ApprovedDaysCount INT
+        Reason STRING
+        Status STRING
+        PartialApproval BIT
+        SubmittedDate DATETIME
+        ReviewedDate DATETIME
+        ReviewedBy INT FK
+        ReviewComments STRING
+        LastModifiedDate DATETIME
+    }
+
+    tb_LeaveRequestDates {
+        RequestDateID INT PK
+        RequestID INT FK
+        LeaveDate DATE
+        DateStatus STRING
+        IsWorkingDay BIT
+        CreatedDate DATETIME
+        LastModifiedDate DATETIME
+    }
+
+    tb_Holidays {
+        HolidayID INT PK
+        HolidayDate DATE
+        HolidayName_EN STRING
+        HolidayName_ZH STRING
+        Year INT
+        IsActive BIT
+        CreatedDate DATETIME
+        LastModifiedDate DATETIME
+    }
+
+    tb_BlackoutDates {
+        BlackoutID INT PK
+        BlackoutDate DATE
+        Reason_EN STRING
+        Reason_ZH STRING
+        IsActive BIT
+        CreatedBy INT FK
+        CreatedDate DATETIME
+        LastModifiedBy INT FK
+        LastModifiedDate DATETIME
+    }
+
+    tb_AuditLog {
+        LogID BIGINT PK
+        UserID INT FK
+        Action STRING
+        EntityType STRING
+        EntityID INT
+        Details STRING
+        IPAddress STRING
+        Timestamp DATETIME
+    }
+
+    tb_Departments ||--o{ tb_Users : has_members
+    tb_Users ||--o{ tb_Departments : manages
+    tb_Users ||--o{ tb_LeaveBalances : has_balances
+    tb_LeaveTypes ||--o{ tb_LeaveBalances : typed_as
+    tb_Users ||--o{ tb_LeaveRequests : submits
+    tb_LeaveTypes ||--o{ tb_LeaveRequests : for_type
+    tb_LeaveRequests ||--o{ tb_LeaveRequestDates : has_dates
+    tb_Users ||--o{ tb_BlackoutDates : created_by
+    tb_Users ||--o{ tb_BlackoutDates : modified_by
+    tb_Users ||--o{ tb_AuditLog : actor
+

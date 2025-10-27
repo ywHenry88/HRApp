@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Leave Request - HR Leave Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/styles.css">
+    <style>
+        /* MOBILE-FIRST Calendar - Auto-fit approach */
+        * {
+            box-sizing: border-box;
+        }
+        
+        .calendar-picker {
+            background: white;
+            border-radius: 8px;
+            padding: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid #e5e7eb;
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+        }
+        
+        /* Override Tailwind padding on mobile */
+        @media (max-width: 640px) {
+            .page-content {
+                padding: 0.5rem !important;
+            }
+            
+            .bg-white {
+                padding: 0.5rem !important;
+            }
+            
+            .calendar-picker {
+                padding: 0.5rem !important;
+                margin: 0 !important;
+            }
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-top: 0.5rem;
+            width: 100%;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.7rem;
+            padding: 0.25rem;
+            color: #374151;
+            background: #f9fafb;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            position: relative;
+            background: white;
+            min-height: 36px;
+            color: #1f2937;
+            padding: 2px;
+        }
+        
+        /* MOBILE: Make calendar cells smaller */
+        @media (max-width: 640px) {
+            .calendar-grid {
+                gap: 2px !important;
+            }
+            
+            .calendar-day {
+                min-height: 0 !important;
+                height: auto !important;
+                font-size: 0.7rem !important;
+                padding: 0 !important;
+                border-width: 1px !important;
+                border-radius: 2px !important;
+            }
+            
+            .calendar-day-header {
+                font-size: 0.6rem !important;
+                padding: 0.15rem !important;
+            }
+            
+            .calendar-header {
+                margin-bottom: 0.5rem !important;
+                padding-bottom: 0.25rem !important;
+            }
+        }
+        
+        /* EXTRA SMALL: Even smaller for < 375px */
+        @media (max-width: 374px) {
+            .calendar-grid {
+                gap: 1px !important;
+            }
+            
+            .calendar-day {
+                font-size: 0.65rem !important;
+            }
+            
+            .calendar-day-header {
+                font-size: 0.55rem !important;
+                padding: 0.1rem !important;
+            }
+        }
+
+        .calendar-day:hover:not(.disabled):not(.blackout):not(.empty) {
+            background: #e0f2fe;
+            border-color: #00AFB9;
+            transform: scale(1.05);
+        }
+
+        .calendar-day.empty {
+            border: none;
+            cursor: default;
+        }
+
+        /* Visual highlight for Sundays and Holidays (still selectable equally) */
+        .calendar-day.sunday {
+            background: #fce4ec;
+        }
+        .calendar-day.holiday {
+            background: #fce4ec;
+            font-weight: bold;
+        }
+
+        .calendar-day .holiday-label {
+            position: absolute;
+            bottom: 2px;
+            left: 2px;
+            right: 2px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-size: 0.55rem;
+            font-weight: 600;
+            color: #b45309; /* amber-700 */
+            background: #fef3c7; /* amber-100 */
+            border: 1px solid #fde68a; /* amber-200 */
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+
+        .calendar-day.blackout {
+            background: #fee2e2;
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        .calendar-day.blackout::after {
+            content: '❌';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            font-size: 8px;
+        }
+
+        .calendar-day.selected {
+            background: #00AFB9 !important;
+            color: white !important;
+            font-weight: 700;
+            border-color: #00AFB9;
+            box-shadow: 0 2px 4px rgba(0, 175, 185, 0.3);
+        }
+
+        .calendar-day.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            color: #9ca3af;
+        }
+
+        .calendar-day.today {
+            border: 3px solid #00AFB9 !important;
+            font-weight: bold;
+            box-shadow: 0 0 0 2px rgba(0, 175, 185, 0.1);
+        }
+
+        .selected-dates-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .date-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: #00AFB9;
+            color: white;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin: 0.25rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 0.5rem;
+            border: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Top Header -->
+        <div class="top-header">
+            <div class="flex items-center">
+                <a href="dashboard.html" class="mr-3">
+                    <i class="fas fa-arrow-left text-white"></i>
+                </a>
+                <h1 class="text-lg font-bold" data-i18n="leave.title">Leave Request</h1>
+            </div>
+            <div class="header-right">
+                <!-- Language Switcher -->
+                <div class="lang-switcher relative">
+                    <div class="flex items-center cursor-pointer" onclick="toggleLangDropdown()">
+                        <i class="fas fa-globe text-white"></i>
+                        <span class="current-lang ml-1 text-sm" id="currentLangText">EN</span>
+                    </div>
+                    <div class="dropdown-menu" id="langDropdown">
+                        <div class="dropdown-item" data-lang="en" onclick="switchLanguage('en')">English</div>
+                        <div class="dropdown-item" data-lang="zh" onclick="switchLanguage('zh')">繁體中文</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <main class="page-content p-4">
+            <!-- Current Balance Summary -->
+            <div class="mb-4">
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <h3 class="text-sm font-medium text-[#00AFB9] mb-2" data-i18n="dashboard.leaveBalance">Current Balance</h3>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="flex justify-between">
+                            <span data-i18n="leave.annual">Annual:</span>
+                            <span class="font-bold text-[#00AFB9]">15 <span data-i18n="common.days">days</span></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span data-i18n="leave.sick">Sick:</span>
+                            <span class="font-bold text-[#FF6B6B]">8 <span data-i18n="common.days">days</span></span>
+                        </div>
+                        
+                    </div>
+                    <div class="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-[12px] text-blue-800">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        <span data-i18n="leave.annualInfo">Annual leave has no expiry and carries forward indefinitely. Split/pay-in-lieu handled case-by-case by Admin.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leave Request Form -->
+            <form id="leaveRequestForm" class="space-y-4">
+                <!-- Leave Type -->
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label for="leaveType" class="block text-sm font-medium text-gray-700 mb-2">
+                        <span data-i18n="leave.leaveType">Leave Type</span> <span class="text-red-500">*</span>
+                    </label>
+                    <select id="leaveType" name="leaveType" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9] text-sm">
+                        <option value="" data-i18n="leave.selectType">-- Select Leave Type --</option>
+                        <option value="annual" data-balance="15" data-i18n="leave.annualFull">Annual Leave (年假)</option>
+                        <option value="sick" data-balance="8" data-i18n="leave.sickFull">Sick Leave (病假)</option>
+                        
+                    </select>
+                    <div id="balanceInfo" class="hidden mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        <span data-i18n="leave.available">Available:</span> <span id="availableDays" class="font-bold">0</span> <span data-i18n="common.days">days</span>
+                    </div>
+                </div>
+
+                <!-- Calendar Date Picker -->
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <span data-i18n="leave.selectDates">Select Dates</span> <span class="text-red-500">*</span>
+                    </label>
+                    <p class="text-xs text-gray-500 mb-3" data-i18n="leave.clickToSelect">Click dates to select. Click again to deselect.</p>
+
+                    <div class="calendar-picker">
+                        <div class="calendar-header">
+                            <button type="button" onclick="previousMonth()" class="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span id="currentMonthYear" class="font-bold text-base"></span>
+                            <button type="button" onclick="nextMonth()" class="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+
+                        <div class="calendar-grid" id="calendarDays">
+                            <!-- Days of week headers -->
+                            <div class="calendar-day-header">Sun</div>
+                            <div class="calendar-day-header">Mon</div>
+                            <div class="calendar-day-header">Tue</div>
+                            <div class="calendar-day-header">Wed</div>
+                            <div class="calendar-day-header">Thu</div>
+                            <div class="calendar-day-header">Fri</div>
+                            <div class="calendar-day-header">Sat</div>
+                            <!-- Calendar days will be inserted here by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="mt-3 p-3 bg-gray-50 rounded-lg">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="legend-item">
+                                <div class="legend-box" style="background: #00AFB9;"></div>
+                                <span data-i18n="calendar.selected">Selected</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-box" style="background: #fee2e2;"></div>
+                                <span data-i18n="calendar.blackout">Blackout</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-box" style="background: #fce4ec;"></div>
+                                <span data-i18n="calendar.sundayHoliday">Sunday / Holiday</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selected Dates Display -->
+                <div id="selectedDatesSection" class="hidden bg-white p-4 rounded-lg shadow-md">
+                    <h4 class="text-sm font-medium text-gray-700 mb-2" data-i18n="leave.selectedDates">Selected Dates:</h4>
+                    <div id="selectedDatesList" class="selected-dates-list mb-3">
+                        <!-- Selected dates will be listed here -->
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-[#00AFB9] bg-opacity-10 rounded-lg">
+                        <div>
+                            <p class="text-xs text-gray-600" data-i18n="leave.totalSelectedDays">Total Selected Days</p>
+                            <p class="text-2xl font-bold text-[#00AFB9]" id="totalSelectedDays">0</p>
+                        </div>
+                        <button type="button" onclick="clearAllDates()" 
+                            class="text-xs text-red-600 hover:text-red-700">
+                            <i class="fas fa-times-circle mr-1"></i><span data-i18n="common.clearAll">Clear All</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Reason -->
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label for="reason" class="block text-sm font-medium text-gray-700 mb-2">
+                        <span data-i18n="leave.reason">Reason</span> <span class="text-gray-400 text-xs" data-i18n="common.optional">(Optional)</span>
+                    </label>
+                    <textarea id="reason" name="reason" rows="3" maxlength="500"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9] text-sm resize-none"
+                        data-i18n-placeholder="leave.reasonPlaceholder" placeholder="Enter reason for leave request (optional)"></textarea>
+                    <div class="text-right text-xs text-gray-500 mt-1">
+                        <span id="charCount">0</span> / 500
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <button type="submit" 
+                        class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center text-base shadow-lg">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        <span class="text-white" data-i18n="leave.submitRequest">Submit Request</span>
+                    </button>
+                </div>
+
+                <!-- Cancel Button -->
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <a href="dashboard.html" 
+                        class="w-full block bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors text-center text-sm">
+                        <i class="fas fa-times mr-1"></i>
+                        <span data-i18n="common.cancel">Cancel</span>
+                    </a>
+                </div>
+            </form>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="dashboard.html">
+                <i class="fas fa-home"></i>
+                <span data-i18n="nav.home">Home</span>
+            </a>
+            <a href="leave-request-multi.html" class="active">
+                <i class="fas fa-calendar-plus"></i>
+                <span data-i18n="nav.request">Request</span>
+            </a>
+            <a href="leave-history.html">
+                <i class="fas fa-history"></i>
+                <span data-i18n="nav.history">History</span>
+            </a>
+            <a href="profile.html">
+                <i class="fas fa-user"></i>
+                <span data-i18n="nav.profile">Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="../../js/app.js"></script>
+    <script>
+        // Leave balances (in production, from API)
+        const leaveBalances = {
+            annual: 15,
+            sick: 8,
+            personal: 3,
+            study: 2
+        };
+
+        // Public holidays (loaded from 1823.gov.hk JSON; visual highlight only)
+        let holidays = [];
+
+        // Blackout dates (in production, from API - cannot apply for leave)
+        const blackoutDates = [
+            '2025-10-20', // Day before holiday
+            '2025-10-31', // Day before holiday
+            '2025-12-24', // Day before Christmas
+            '2025-11-14'  // Day before holiday
+        ];
+
+        // State
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        let selectedDates = new Set();
+
+        // Initialize
+        // Check if in edit mode
+        let editMode = false;
+        let editRequestId = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if logged in
+            const username = localStorage.getItem('username');
+            if (!username) {
+                window.location.href = '../login.html';
+            }
+            
+
+            // Check if editing existing request
+            const urlParams = new URLSearchParams(window.location.search);
+            const editId = urlParams.get('edit');
+            
+            if (editId) {
+                const editData = localStorage.getItem('editLeaveRequest');
+                if (editData) {
+                    try {
+                        const request = JSON.parse(editData);
+                        editMode = true;
+                        editRequestId = request.id;
+                        
+                        // Update page title
+                        document.querySelector('h1').textContent = 'Edit Leave Request';
+                        
+                        // Pre-fill form
+                        document.getElementById('leaveType').value = request.type;
+                        updateLeaveBalance();
+                        
+                        document.getElementById('reason').value = request.reason || '';
+                        document.getElementById('charCount').textContent = (request.reason || '').length;
+                        
+                        // Update submit button text
+                        const submitBtn = document.querySelector('button[type="submit"] span');
+                        if (submitBtn) submitBtn.textContent = 'Update Request';
+                        
+                        // Pre-select dates (will be done after calendar renders)
+                        if (request.requestedDates && request.requestedDates.length > 0) {
+                            selectedDates = new Set(request.requestedDates);
+                        } else {
+                            // Fallback: generate dates from startDate to endDate
+                            const start = new Date(request.startDate);
+                            const end = new Date(request.endDate);
+                            while (start <= end) {
+                                const dateStr = formatDate(start);
+                                selectedDates.add(dateStr);
+                                start.setDate(start.getDate() + 1);
+                            }
+                        }
+                        
+                        // Clear localStorage
+                        localStorage.removeItem('editLeaveRequest');
+                        
+                    } catch (e) {
+                        console.error('Error loading edit data:', e);
+                        showAlert('Error loading request data', 'error');
+                    }
+                }
+            }
+
+            // Load holidays before render
+            ensureHolidaysLoaded().then(() => {
+                holidays = Array.from(getHolidaySet());
+                renderCalendar();
+            }).catch(() => {
+                // Fallback render if network fails
+                renderCalendar();
+            });
+
+            // Character count for reason
+            document.getElementById('reason').addEventListener('input', function() {
+                document.getElementById('charCount').textContent = this.value.length;
+            });
+
+            // Leave type change
+            document.getElementById('leaveType').addEventListener('change', function() {
+                updateLeaveBalance();
+            });
+        });
+
+        // Update leave balance display
+        function updateLeaveBalance() {
+            const leaveType = document.getElementById('leaveType').value;
+            const balanceInfo = document.getElementById('balanceInfo');
+            const availableDays = document.getElementById('availableDays');
+
+            if (leaveType) {
+                availableDays.textContent = leaveBalances[leaveType];
+                balanceInfo.classList.remove('hidden');
+            } else {
+                balanceInfo.classList.add('hidden');
+            }
+        }
+
+        // Re-render when language changes (holiday names are not shown in this page, but keep consistent)
+        window.addEventListener('languageChanged', () => {
+            renderCalendar();
+        });
+
+        // Render calendar
+        function renderCalendar() {
+            const monthYear = document.getElementById('currentMonthYear');
+            const calendarDays = document.getElementById('calendarDays');
+
+            // Update month/year display
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            monthYear.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+            // Clear existing days (keep headers)
+            while (calendarDays.children.length > 7) {
+                calendarDays.removeChild(calendarDays.lastChild);
+            }
+
+            // Get first day of month and total days
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const today = new Date();
+
+            // Add empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day empty';
+                calendarDays.appendChild(emptyDay);
+            }
+
+            // Add days of month
+            for (let day = 1; day <= totalDays; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+
+                const currentDate = new Date(currentYear, currentMonth, day);
+                const dateStr = formatDate(currentDate);
+                const dayOfWeek = currentDate.getDay();
+
+                // Check if past date
+                const isPast = currentDate < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+                // Check if today
+                if (currentDate.toDateString() === today.toDateString()) {
+                    dayElement.classList.add('today');
+                }
+
+                // Visual highlight for Sunday and holidays (selectable equally)
+                if (dayOfWeek === 0) {
+                    dayElement.classList.add('sunday');
+                }
+                if (holidays.includes(dateStr)) {
+                    dayElement.classList.add('holiday');
+                    // Holiday label (localized)
+                    if (typeof getHolidayNamesByDate === 'function') {
+                        const names = getHolidayNamesByDate(dateStr) || {};
+                        const hname = (typeof currentLang !== 'undefined' && currentLang === 'zh') ? (names.zh || names.en) : (names.en || names.zh);
+                        if (hname) {
+                            const label = document.createElement('div');
+                            label.className = 'holiday-label';
+                            label.title = hname;
+                            label.textContent = hname;
+                            dayElement.appendChild(label);
+                        }
+                    }
+                }
+
+                // Check if blackout date
+                if (blackoutDates.includes(dateStr)) {
+                    dayElement.classList.add('blackout');
+                }
+
+                // Check if selected
+                if (selectedDates.has(dateStr)) {
+                    dayElement.classList.add('selected');
+                }
+
+                // Disable past dates and blackout dates
+                if (isPast || blackoutDates.includes(dateStr)) {
+                    dayElement.classList.add('disabled');
+                } else {
+                    dayElement.onclick = () => toggleDateSelection(dateStr, dayElement);
+                }
+
+                calendarDays.appendChild(dayElement);
+            }
+        }
+
+        // Toggle date selection
+        function toggleDateSelection(dateStr, element) {
+            if (selectedDates.has(dateStr)) {
+                selectedDates.delete(dateStr);
+                element.classList.remove('selected');
+            } else {
+                selectedDates.add(dateStr);
+                element.classList.add('selected');
+            }
+            updateSelectedDatesDisplay();
+        }
+
+        // Update selected dates display
+        function updateSelectedDatesDisplay() {
+            const section = document.getElementById('selectedDatesSection');
+            const list = document.getElementById('selectedDatesList');
+            const totalDisplay = document.getElementById('totalSelectedDays');
+
+            if (selectedDates.size === 0) {
+                section.classList.add('hidden');
+                return;
+            }
+
+            section.classList.remove('hidden');
+
+            // Sort dates
+            const sortedDates = Array.from(selectedDates).sort();
+
+            // Display dates
+            list.innerHTML = sortedDates.map(dateStr => {
+                const date = new Date(dateStr);
+                const dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()];
+                return `<div class="text-xs py-1 border-b border-gray-100">
+                    <i class="fas fa-calendar text-[#00AFB9] mr-1"></i>
+                    ${dateStr} (${dayName})
+                </div>`;
+            }).join('');
+
+            // Count total selected days (all selectable days equal level)
+            totalDisplay.textContent = sortedDates.length;
+        }
+
+        // Clear all selected dates
+        function clearAllDates() {
+            selectedDates.clear();
+            renderCalendar();
+            updateSelectedDatesDisplay();
+        }
+
+        // Navigate months
+        function previousMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        }
+
+        // Format date to YYYY-MM-DD
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Form submission
+        document.getElementById('leaveRequestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const leaveType = document.getElementById('leaveType').value;
+            const reason = document.getElementById('reason').value;
+
+            // Validate
+            if (!leaveType) {
+                showAlert('Please select a leave type', 'error');
+                return;
+            }
+
+            if (selectedDates.size === 0) {
+                showAlert('Please select at least one date', 'error');
+                return;
+            }
+
+            // Total selected days
+            const sortedDates = Array.from(selectedDates).sort();
+            const totalDays = sortedDates.length;
+
+            // Check balance by total selected days
+            if (totalDays > leaveBalances[leaveType]) {
+                showAlert(`Insufficient balance! You only have ${leaveBalances[leaveType]} days available.`, 'error');
+                return;
+            }
+
+            if (editMode) {
+                // Update existing request
+                // In production: PUT /api/leaves/request/:id with { leaveTypeId, leaveDates: Array, reason }
+                console.log('Updating request ID:', editRequestId, {
+                    leaveType,
+                    selectedDates: Array.from(selectedDates),
+                    totalDays,
+                    reason
+                });
+
+                showAlert('Leave request updated successfully!', 'success');
+            } else {
+                // Create new request
+                // In production: POST /api/leaves/request with { leaveTypeId, leaveDates: Array, reason }
+                console.log('Creating new request:', {
+                    leaveType,
+                    selectedDates: Array.from(selectedDates),
+                    totalDays,
+                    reason
+                });
+
+                showAlert('Leave request submitted successfully!', 'success');
+            }
+
+            // Redirect to history page after 1.5 seconds
+            setTimeout(() => {
+                window.location.href = 'leave-history.html';
+            }, 1500);
+        });
+
+        // Alert function
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white text-sm font-medium max-w-sm`;
+            alertDiv.textContent = message;
+            document.body.appendChild(alertDiv);
+
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+
