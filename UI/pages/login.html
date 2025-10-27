@@ -22,15 +22,15 @@
 </head>
 <body class="bg-gray-100">
     <div class="page-container">
-        <div class="flex justify-center items-center min-h-screen bg-gradient-to-br from-[#00AFB9] to-[#4BCBD6]">
-            <!-- Language switcher in bottom left corner -->
-            <div class="fixed bottom-4 left-4 z-50 lang-switcher">
+        <div class="flex justify-center items-center min-h-screen bg-gradient-to-br from-[#00AFB9] to-[#4BCBD6] relative">
+            <!-- Language switcher in top right corner -->
+            <div class="fixed top-4 right-4 z-50 lang-switcher">
                 <div class="flex items-center bg-white bg-opacity-20 p-2 rounded-lg text-white shadow-md cursor-pointer" onclick="toggleLangDropdown()">
                     <i class="fas fa-globe text-white"></i>
                     <span class="current-lang ml-2" id="currentLangText">中</span>
                     <i class="fas fa-chevron-down ml-1 text-xs"></i>
                 </div>
-                <div class="dropdown-menu" id="langDropdown" style="bottom: 100%; top: auto; margin-top: 0; margin-bottom: 0.5rem;">
+                <div class="dropdown-menu" id="langDropdown">
                     <div class="dropdown-item" data-lang="en" onclick="switchLanguage('en')">
                         English
                     </div>
@@ -39,11 +39,28 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Decorative floating elements -->
+            <div class="absolute top-10 left-10 w-20 h-20 bg-white bg-opacity-10 rounded-full blur-xl floating-element"></div>
+            <div class="absolute bottom-20 right-20 w-32 h-32 bg-white bg-opacity-10 rounded-full blur-2xl floating-element"></div>
+            <div class="absolute top-1/3 right-10 w-16 h-16 bg-white bg-opacity-10 rounded-full blur-lg floating-element"></div>
             
-            <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md mx-4">
+            <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md mx-4 relative z-10 login-card">
                 <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-[#00AFB9] bg-opacity-10 flex items-center justify-center rounded-full mx-auto mb-4">
-                        <i class="fas fa-calendar-check text-[#00AFB9] text-3xl"></i>
+                    <!-- Logo Image -->
+                    <div class="flex justify-center mb-4">
+                        <img src="images/logo.png" alt="ETAK Logo" class="h-20 w-auto" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="w-16 h-16 bg-[#00AFB9] bg-opacity-10 flex items-center justify-center rounded-full mx-auto" style="display:none;">
+                            <i class="fas fa-calendar-check text-[#00AFB9] text-3xl"></i>
+                        </div>
+                    </div>
+                    <!-- Divider line with icon -->
+                    <div class="flex items-center justify-center mb-4">
+                        <div class="border-t border-gray-200 flex-grow max-w-[80px]"></div>
+                        <div class="mx-3">
+                            <i class="fas fa-calendar-check text-[#00AFB9] text-xl"></i>
+                        </div>
+                        <div class="border-t border-gray-200 flex-grow max-w-[80px]"></div>
                     </div>
                     <h1 class="text-2xl font-bold text-gray-800 mb-2" data-i18n="login.title">HR Leave Management System</h1>
                     <p class="text-sm text-gray-600" data-i18n="login.subtitle">Employee & Admin Portal</p>
@@ -104,11 +121,22 @@
                     </div>
 
                     <!-- Demo Credentials Info -->
-                    <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
-                        <p class="text-xs font-medium text-blue-800 mb-2" data-i18n="login.demoTitle">Demo Credentials:</p>
-                        <div class="text-xs text-blue-700 space-y-1">
-                            <p><strong data-i18n="login.demoAdmin">Admin:</strong> <span data-i18n="login.demoAdminUser">admin</span></p>
-                            <p><strong data-i18n="login.demoEmployee">Employee:</strong> <span data-i18n="login.demoEmployeeUser">user</span></p>
+                    <div class="mt-6 p-4 pl-6 bg-blue-50 border border-blue-200 rounded-md">
+                        <p class="text-xs font-semibold text-blue-800 mb-3 flex items-center">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <span data-i18n="login.demoTitle">Demo Credentials:</span>
+                        </p>
+                        <div class="text-xs text-blue-700 space-y-2">
+                            <p class="flex items-center">
+                                <i class="fas fa-user-shield mr-2 text-blue-600"></i>
+                                <strong data-i18n="login.demoAdmin">Admin:</strong> 
+                                <span class="ml-2 font-mono bg-white px-2 py-1 rounded" data-i18n="login.demoAdminUser">admin</span>
+                            </p>
+                            <p class="flex items-center">
+                                <i class="fas fa-user mr-2 text-blue-600"></i>
+                                <strong data-i18n="login.demoEmployee">Employee:</strong> 
+                                <span class="ml-2 font-mono bg-white px-2 py-1 rounded" data-i18n="login.demoEmployeeUser">user</span>
+                            </p>
                         </div>
                     </div>
                 </form>

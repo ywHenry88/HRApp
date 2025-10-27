@@ -1,5 +1,132 @@
-/* Version: 1.2.0 */
+/* Version: 2.1.0 */
 /* Custom styles for the Employee Leave System */
+
+/* Login Page Animations */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.1;
+    }
+    50% {
+        opacity: 0.2;
+    }
+}
+
+.login-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.floating-element {
+    animation: float 6s ease-in-out infinite;
+}
+
+.floating-element:nth-child(2) {
+    animation-delay: 1s;
+    animation-duration: 8s;
+}
+
+.floating-element:nth-child(3) {
+    animation-delay: 2s;
+    animation-duration: 7s;
+}
+
+/* Login Page Card Styling */
+.login-card {
+    position: relative;
+    background: linear-gradient(135deg, #ffffff 0%, #f8feff 100%);
+}
+
+.login-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #00AFB9 0%, #4BCBD6 100%);
+    border-radius: 0.75rem 0.75rem 0 0;
+}
+
+/* Login Page Input Effects */
+.login-card input:focus {
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+.login-card button[type="submit"] {
+    transition: all 0.3s ease;
+}
+
+.login-card button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+}
+
+.login-card button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+/* Logo animation */
+.login-card img {
+    transition: transform 0.3s ease;
+}
+
+.login-card img:hover {
+    transform: scale(1.05);
+}
+
+/* Input icon animations */
+.login-card .fa-user,
+.login-card .fa-lock {
+    transition: color 0.3s ease;
+}
+
+.login-card input:focus ~ .fa-user,
+.login-card input:focus ~ .fa-lock {
+    color: #00AFB9 !important;
+}
+
+/* Demo credentials box styling */
+.login-card .bg-blue-50 {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 1px solid #bfdbfe;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-card .bg-blue-50::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+}
+
+/* Language switcher enhancement */
+.lang-switcher .dropdown-menu {
+    backdrop-filter: blur(10px);
+}
 
 :root {
     --primary-color: #00AFB9;
