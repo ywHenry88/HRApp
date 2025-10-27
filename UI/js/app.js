@@ -87,6 +87,22 @@ const translations = {
         en: 'View all',
         zh: '查看全部'
     },
+    'dashboard.employeeCode': {
+        en: 'Employee Code',
+        zh: '員工編號'
+    },
+    'dashboard.hireDate': {
+        en: 'Hire Date',
+        zh: '入職日期'
+    },
+    'dashboard.currentPeriod': {
+        en: 'Current Period',
+        zh: '當前服務期間'
+    },
+    'leave.total': {
+        en: 'Total',
+        zh: '總計'
+    },
     'dashboard.requestLeave': {
         en: 'Request Leave',
         zh: '申請請假'
@@ -111,7 +127,7 @@ const translations = {
     },
     'leave.sick': {
         en: 'Sick Leave',
-        zh: '病假'
+        zh: '有薪病假'
     },
     'leave.applied': {
         en: 'Applied',
@@ -124,6 +140,62 @@ const translations = {
     'leave.appliedNote': {
         en: '5 days applied in current period',
         zh: '當前服務期間已使用5天'
+    },
+    'leave.daysUnit': {
+        en: ' days',
+        zh: '天'
+    },
+    'leave.days': {
+        en: 'days',
+        zh: '天'
+    },
+    'leave.totalGranted': {
+        en: 'Total: 11 days (Granted)',
+        zh: '總計：11天（按年授予）'
+    },
+    'leave.totalSick': {
+        en: 'Total: 4 days',
+        zh: '總計：4天'
+    },
+    'leave.appliedExcludingPayment': {
+        en: 'Applied (excl. payment-in-lieu)',
+        zh: '已使用（不含以薪代假）'
+    },
+    'leave.granted': {
+        en: 'Granted',
+        zh: '按年授予'
+    },
+    'leave.estimate': {
+        en: 'Estimate',
+        zh: '按比例估算'
+    },
+    'leave.remaining6': {
+        en: 'Remaining: 6 days',
+        zh: '剩餘：6天'
+    },
+    'leave.remaining138': {
+        en: 'Remaining: 13.8 days',
+        zh: '剩餘：13.8天'
+    },
+    'leave.appliedInPeriod': {
+        en: 'applied in current period',
+        zh: '當前服務期間已使用'
+    },
+    'leave.exclPayment': {
+        en: 'excl. payment-in-lieu',
+        zh: '不含以薪代假'
+    },
+    'leave.appliedNoteExcluding': {
+        en: '5 days applied in current period (excl. payment-in-lieu)',
+        zh: '當前服務期間已使用5天（不含以薪代假）'
+    },
+    'leave.policyTitle': {
+        en: 'Policy:',
+        zh: '政策：'
+    },
+    'leave.policyText': {
+        en: 'Annual leave has no expiry. Pay-in-lieu handled case-by-case.',
+        zh: '年假不設到期。以薪代假由管理員逐案處理。'
     },
     'leave.personal': {
         en: 'Annual Leave',
@@ -192,8 +264,8 @@ const translations = {
         zh: '年假 (Annual Leave)'
     },
     'leave.sickFull': {
-        en: 'Sick Leave (病假)',
-        zh: '病假 (Sick Leave)'
+        en: 'Sick Leave (有薪病假)',
+        zh: '有薪病假 (Sick Leave)'
     },
     'leave.annualInfo': {
         en: 'Annual leave has no expiry and carries forward indefinitely. Split/pay-in-lieu handled case-by-case by Admin.',
@@ -251,6 +323,22 @@ const translations = {
         en: 'Filter by Type',
         zh: '按類型篩選'
     },
+    'history.allTypes': {
+        en: 'All Types',
+        zh: '所有類型'
+    },
+    'history.typeAnnual': {
+        en: 'Annual Leave',
+        zh: '年假'
+    },
+    'history.typeSick': {
+        en: 'Paid Sick Leave',
+        zh: '有薪病假'
+    },
+    'history.typeComp': {
+        en: 'Compensatory Leave',
+        zh: '補假'
+    },
     'history.all': {
         en: 'All',
         zh: '全部'
@@ -258,6 +346,46 @@ const translations = {
     'history.noRequests': {
         en: 'No leave requests found',
         zh: '找不到請假記錄'
+    },
+    'history.submitted': {
+        en: 'Submitted:',
+        zh: '提交：'
+    },
+    'history.statusBy': {
+        en: 'Approved by',
+        zh: '批准人'
+    },
+    'history.on': {
+        en: 'on',
+        zh: '於'
+    },
+    'history.adminComment': {
+        en: 'Admin Comment:',
+        zh: '管理員備註：'
+    },
+    'history.partialApproval': {
+        en: 'Partial Approval',
+        zh: '部分批准'
+    },
+    'history.approvedDates': {
+        en: 'Approved Dates:',
+        zh: '獲批日期：'
+    },
+    'history.notApproved': {
+        en: 'Not Approved:',
+        zh: '未獲批：'
+    },
+    'history.none': {
+        en: 'None',
+        zh: '無'
+    },
+    'history.edit': {
+        en: 'Edit',
+        zh: '編輯'
+    },
+    'history.delete': {
+        en: 'Delete',
+        zh: '刪除'
     },
 
     // Status
@@ -272,6 +400,24 @@ const translations = {
     'status.rejected': {
         en: 'Rejected',
         zh: '已拒絕'
+    },
+    // Common words
+    'common.day': {
+        en: 'day',
+        zh: '天'
+    },
+    'common.days': {
+        en: 'days',
+        zh: '天'
+    },
+    // History dynamic phrases
+    'history.requested': {
+        en: 'requested',
+        zh: '已申請'
+    },
+    'history.processedBy': {
+        en: 'Processed by',
+        zh: '處理人'
     },
     
     // Profile

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- 
-    Version: 2.4.3
+    Version: 2.5.1
     Employee Dashboard - HR Leave Management System (Redesigned)
     Description: Professional, clean, and organized mobile-first dashboard
     Features:
@@ -11,6 +11,49 @@
     - Team calendar view with month navigation
     - Consistent spacing and visual design
     - Full bilingual support (EN/繁體中文)
+    
+    Changes in v2.5.1:
+    - Fixed Annual Leave color: now displays in teal-700 (darker teal for better visibility)
+    - Enhanced readability with darker font colors throughout:
+      * Primary text: text-gray-900 (was gray-800)
+      * Secondary text: text-gray-700 (was gray-600)
+    - Updated all accent colors to -700 variants for better contrast:
+      * Annual Leave: text-teal-700 (rich teal)
+      * Sick Leave: text-red-700 (darker red)
+      * Pending Requests: text-orange-600 (warm orange)
+    - Improved "View all" link color to teal-700 for consistency
+    - All text now more readable with better contrast ratios
+    
+    Changes in v2.5.0:
+    - Consistent font sizes across all sections for professional appearance
+    - Standardized text hierarchy: text-lg for titles, text-xs for labels, text-sm for values
+    - Unified color scheme: text-gray-800 for primary, text-gray-600 for secondary
+    - Large 3xl numbers for applied days (5, 1, 2) for better visibility
+    - Removed cluttered info note about payment-in-lieu
+    - Improved spacing and padding consistency (p-3, gap-3, mt-3, mt-1)
+    - Policy box enhanced with subtle border and better readability
+    - Professional, clean, and modern layout throughout
+    
+    Changes in v2.4.6:
+    - Clean single-language display - no more mixed language labels
+    - "Granted" / "按年授予" - shows only selected language
+    - "Estimate" / "按比例估算" - shows only selected language
+    - "Current Period" / "當前服務期間" - shows only selected language
+    - All text now displays in ONE language based on user selection
+    
+    Changes in v2.4.5:
+    - Complete bilingual support - ALL text now switches between EN/ZH properly
+    - Added translations for: Employee Code, Hire Date, Current Period
+    - Added translations for: Total days, Granted, Estimate, Remaining, Policy text
+    - Added translation for: Applied (excl. payment-in-lieu) note
+    - Added translations for: Team Schedule and all leave summary details
+    - "天" unit properly switches to " days" in English
+    
+    Changes in v2.4.4:
+    - Changed "病假" to "有薪病假" (Paid Sick Leave) in Chinese
+    - Added "天" unit after numbers: "5天", "1天" 
+    - Added "(不含以薪代假)" note directly under Annual Leave applied number
+    - Icons now visible and distinct: beach umbrella (Annual), medical briefcase (Sick), clock (Pending)
     
     Changes in v2.4.3:
     - Changed to show "Applied" days as the prominent number (avoids confusion)
@@ -99,15 +142,15 @@
                     </h2>
                     <div class="grid grid-cols-2 gap-3 text-xs">
                         <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                            <div class="text-gray-600 mb-1 font-medium">Employee Code</div>
+                            <div class="text-xs text-gray-600 mb-1 font-medium" data-i18n="dashboard.employeeCode">Employee Code</div>
                             <div class="font-bold text-sm text-gray-800" id="employeeCode">L003</div>
                         </div>
                         <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                            <div class="text-gray-600 mb-1 font-medium">Hire Date</div>
+                            <div class="text-xs text-gray-600 mb-1 font-medium" data-i18n="dashboard.hireDate">Hire Date</div>
                             <div class="font-bold text-sm text-gray-800" id="hireDate">01/04/1995</div>
                         </div>
                         <div class="col-span-2 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                            <div class="text-gray-600 mb-1 font-medium">Current Period (當前服務期間)</div>
+                            <div class="text-xs text-gray-600 mb-1 font-medium" data-i18n="dashboard.currentPeriod">Current Period</div>
                             <div class="font-bold text-sm text-gray-800" id="currentPeriod">2025-04-01 → 2026-03-31</div>
                         </div>
                     </div>
@@ -120,36 +163,33 @@
                 <div class="bg-white p-4 rounded-xl shadow-md border-l-4 border-blue-500 mb-3">
                     <div class="flex items-center justify-between mb-3">
                         <div class="flex items-center">
-                            <div class="w-12 h-12 rounded-full bg-[#00AFB9] flex items-center justify-center mr-3 flex-shrink-0">
-                                <i class="fas fa-calendar-alt text-white text-lg"></i>
+                            <div class="w-12 h-12 rounded-full bg-cyan-50 flex items-center justify-center mr-3 flex-shrink-0">
+                                <i class="fas fa-umbrella-beach text-cyan-600 text-lg"></i>
                             </div>
                             <div>
-                                <div class="text-sm font-semibold text-gray-800" data-i18n="leave.annual">Annual Leave</div>
-                                <div class="text-xs text-gray-600">Total: 11 days (Granted)</div>
+                                <div class="text-lg font-bold text-gray-900" data-i18n="leave.annual">Annual Leave</div>
+                                <div class="text-xs text-gray-700 mt-1"><span data-i18n="leave.total">Total</span>: 11 <span data-i18n="leave.days">days</span> (<span data-i18n="leave.granted">Granted</span>)</div>
                             </div>
                         </div>
                         <div class="text-right">
-                            <div class="text-2xl font-bold text-[#00AFB9]">5</div>
-                            <div class="text-[9px] text-gray-500" data-i18n="leave.applied">Applied</div>
+                            <div class="text-3xl font-bold text-teal-700">5<span data-i18n="leave.daysUnit">天</span></div>
+                            <div class="text-xs text-gray-700 mt-1">
+                                <span data-i18n="leave.applied">Applied</span>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-2 text-xs bg-gray-50 p-2 rounded-lg">
+                    <div class="grid grid-cols-2 gap-3 text-xs bg-gray-50 p-3 rounded-lg mt-3">
                         <div>
-                            <div class="text-gray-600 mb-1">Granted (按年授予)</div>
-                            <div class="font-bold text-[#00AFB9]">11 days</div>
-                            <div class="text-[8px] text-gray-500 mt-1">Remaining: 6 days</div>
+                            <div class="text-gray-700 mb-1 font-medium" data-i18n="leave.granted">Granted</div>
+                            <div class="font-bold text-gray-900 text-sm">11 <span data-i18n="leave.days">days</span></div>
+                            <div class="text-xs text-gray-700 mt-1"><span data-i18n="leave.remaining">Remaining</span>: 6 <span data-i18n="leave.days">days</span></div>
                         </div>
                         <div>
-                            <div class="text-gray-600 mb-1">Estimate (按比例)</div>
-                            <div class="font-bold text-[#00AFB9]">11 + 7.8 = 18.8 days</div>
-                            <div class="text-[8px] text-gray-500 mt-1">Remaining: 13.8 days</div>
+                            <div class="text-gray-700 mb-1 font-medium" data-i18n="leave.estimate">Estimate</div>
+                            <div class="font-bold text-gray-900 text-sm">11 + 7.8 = 18.8 <span data-i18n="leave.days">days</span></div>
+                            <div class="text-xs text-gray-700 mt-1"><span data-i18n="leave.remaining">Remaining</span>: 13.8 <span data-i18n="leave.days">days</span></div>
                         </div>
-                    </div>
-                    
-                    <div class="mt-2 text-[7px] text-gray-500">
-                        <i class="fas fa-info-circle text-[#00AFB9] mr-1"></i>
-                        <span data-i18n="leave.appliedNote">5 days applied in current period</span> (不含以薪代假)
                     </div>
                 </div>
                 
@@ -157,27 +197,25 @@
                 <div class="bg-white p-4 rounded-xl shadow-md border-l-4 border-blue-500 mb-3">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
-                            <div class="w-12 h-12 rounded-full bg-[#FF6B6B] flex items-center justify-center mr-3 flex-shrink-0">
-                                <i class="fas fa-procedures text-white text-lg"></i>
+                            <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mr-3 flex-shrink-0">
+                                <i class="fas fa-briefcase-medical text-red-600 text-lg"></i>
                             </div>
                             <div>
-                                <div class="text-sm font-semibold text-gray-800" data-i18n="leave.sick">Sick Leave</div>
-                                <div class="text-xs text-gray-600">Total: 4 days</div>
+                                <div class="text-lg font-bold text-gray-900" data-i18n="leave.sick">Sick Leave</div>
+                                <div class="text-xs text-gray-700 mt-1"><span data-i18n="leave.total">Total</span>: 4 <span data-i18n="leave.days">days</span></div>
                             </div>
                         </div>
                         <div class="text-right">
-                            <div class="text-2xl font-bold text-[#FF6B6B]">1</div>
-                            <div class="text-[9px] text-gray-500" data-i18n="leave.applied">Applied</div>
+                            <div class="text-3xl font-bold text-red-700">1<span data-i18n="leave.daysUnit">天</span></div>
+                            <div class="text-xs text-gray-700 mt-1" data-i18n="leave.applied">Applied</div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Policy Info -->
-                <div class="bg-blue-50 p-3 rounded-xl">
-                    <div class="text-[7px] text-blue-900 leading-relaxed">
-                        <strong>Policy:</strong> Annual leave has no expiry. Split/pay-in-lieu handled case-by-case.
-                        <br/>
-                        <span class="text-blue-800">年假不設到期。分拆／以薪代假由管理員逐案處理。</span>
+                <div class="bg-blue-50 p-3 rounded-xl border-l-2 border-blue-400">
+                    <div class="text-xs text-gray-700 leading-relaxed">
+                        <strong class="text-gray-800" data-i18n="leave.policyTitle">Policy:</strong> <span data-i18n="leave.policyText">Annual leave has no expiry. Split/pay-in-lieu handled case-by-case.</span>
                     </div>
                 </div>
             </div>
@@ -191,13 +229,13 @@
                                 <i class="fas fa-clock text-yellow-600 text-lg"></i>
                             </div>
                             <div>
-                                <div class="text-sm font-semibold text-gray-800" data-i18n="dashboard.pendingRequests">Pending Requests</div>
-                                <div class="text-xs text-gray-600" data-i18n="dashboard.awaitingApproval">Awaiting approval</div>
+                                <div class="text-lg font-bold text-gray-900" data-i18n="dashboard.pendingRequests">Pending Requests</div>
+                                <div class="text-xs text-gray-700 mt-1" data-i18n="dashboard.awaitingApproval">Awaiting approval</div>
                             </div>
                         </div>
                         <div class="text-right">
-                            <div class="text-3xl font-bold text-yellow-600">2</div>
-                            <a href="leave-history.html" class="text-xs text-[#00AFB9] hover:underline flex items-center justify-end mt-1">
+                            <div class="text-3xl font-bold text-orange-600">2</div>
+                            <a href="leave-history.html" class="text-xs text-teal-700 hover:underline flex items-center justify-end mt-1">
                                 <span data-i18n="dashboard.viewAll">View all</span> <i class="fas fa-arrow-right ml-1"></i>
                             </a>
                         </div>
@@ -210,7 +248,7 @@
                 <div class="bg-white p-4 rounded-xl shadow-md">
                     <h3 class="text-sm font-semibold text-gray-800 mb-3 flex items-center">
                         <i class="fas fa-users text-[#00AFB9] mr-2"></i>
-                        Team Schedule
+                        <span data-i18n="dashboard.teamSchedule">Team Schedule</span>
                     </h3>
                     
                     <!-- Month Picker -->

@@ -103,10 +103,10 @@
                 <h3 class="text-xs font-medium text-gray-600 mb-2" data-i18n="history.filterByType">Filter by Type</h3>
                 <select id="typeFilter" onchange="filterByType()"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
-                    <option value="all">All Types</option>
-                    <option value="annual">Annual Leave (年假)</option>
-                    <option value="sick">Sick Leave (病假)</option>
-                    
+                    <option value="all" data-i18n="history.allTypes">All Types</option>
+                    <option value="annual" data-i18n="history.typeAnnual">Annual Leave</option>
+                    <option value="sick" data-i18n="history.typeSick">Paid Sick Leave</option>
+                    <option value="comp" data-i18n="history.typeComp">Compensatory Leave</option>
                 </select>
             </div>
 
@@ -319,7 +319,7 @@
                             </div>
                         </div>
                         <div class="px-3 py-1 rounded-full text-xs font-medium" style="background-color: ${status.bg}; color: ${status.text}">
-                            <i class="fas fa-${status.icon} mr-1"></i>${request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                            <i class="fas fa-${status.icon} mr-1"></i><span data-i18n="status.${request.status}">${request.status.charAt(0).toUpperCase() + request.status.slice(1)}</span>
                         </div>
                     </div>
                 </div>
@@ -332,7 +332,7 @@
                             </div>
                     <div class="flex items-center text-sm">
                         <i class="fas fa-clock text-gray-400 w-5"></i>
-                        <span class="text-gray-700">${request.days} ${request.days === 1 ? 'day' : 'days'} requested</span>
+                        <span class="text-gray-700">${request.days} <span data-i18n="common.${request.days === 1 ? 'day' : 'days'}">${request.days === 1 ? 'day' : 'days'}</span> <span data-i18n="history.requested">requested</span></span>
                         ${request.status === 'approved' && request.partialApproval ? `
                             <span class="ml-2 px-2 py-0.5 bg-orange-100 text-orange-700 text-xs rounded-full font-medium">
                                 <i class="fas fa-info-circle mr-1"></i>Only ${request.approvedDays} approved
@@ -347,28 +347,28 @@
                     ` : ''}
                     <div class="flex items-center text-xs text-gray-500">
                         <i class="fas fa-paper-plane w-5"></i>
-                        <span>Submitted: ${formatDate(request.submittedDate)}</span>
+                        <span><span data-i18n="history.submitted">Submitted:</span> ${formatDate(request.submittedDate)}</span>
                             </div>
                     ${request.status !== 'pending' ? `
                     <div class="flex items-center text-xs text-gray-500">
                         <i class="fas fa-user-check w-5"></i>
-                        <span>${request.status.charAt(0).toUpperCase() + request.status.slice(1)} by ${request.approver} on ${formatDate(request.approvedDate)}</span>
+                        <span><span data-i18n="history.statusBy">Approved by</span> ${request.approver} <span data-i18n="history.on">on</span> ${formatDate(request.approvedDate)}</span>
                         </div>
                     ` : ''}
                     ${request.comments ? `
                     <div class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded">
-                        <p class="text-xs text-blue-800"><strong>Admin Comment:</strong> ${request.comments}</p>
+                        <p class="text-xs text-blue-800"><strong data-i18n="history.adminComment">Admin Comment:</strong> ${request.comments}</p>
                     </div>
                     ` : ''}
                     ${request.status === 'approved' && request.partialApproval && request.requestedDates && request.approvedDates ? `
                     <div class="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded">
                         <p class="text-xs font-medium text-yellow-800 mb-2">
-                            <i class="fas fa-exclamation-triangle mr-1"></i>Partial Approval
+                            <i class="fas fa-exclamation-triangle mr-1"></i><span data-i18n="history.partialApproval">Partial Approval</span>
                         </p>
                         <div class="text-xs text-gray-700 space-y-1">
-                            <div><strong>Approved Dates:</strong> ${request.approvedDates.map(d => formatDate(d)).join(', ')}</div>
+                            <div><strong data-i18n="history.approvedDates">Approved Dates:</strong> ${request.approvedDates.map(d => formatDate(d)).join(', ')}</div>
                             <div class="text-red-600">
-                                <strong>Not Approved:</strong> ${request.requestedDates.filter(d => !request.approvedDates.includes(d)).map(d => formatDate(d)).join(', ') || 'None'}
+                                <strong data-i18n="history.notApproved">Not Approved:</strong> ${request.requestedDates.filter(d => !request.approvedDates.includes(d)).map(d => formatDate(d)).join(', ') || '<span data-i18n="history.none">None</span>'}
                             </div>
                         </div>
                     </div>
@@ -379,10 +379,10 @@
                 ${request.status === 'pending' ? `
                 <div class="px-4 pb-4 flex gap-2">
                     <button onclick="editRequest(${request.id})" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg text-sm font-bold transition-colors shadow-md">
-                        <i class="fas fa-edit mr-1"></i>Edit
+                        <i class="fas fa-edit mr-1"></i><span data-i18n="history.edit">Edit</span>
                     </button>
                     <button onclick="cancelRequest(${request.id})" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg text-sm font-bold transition-colors shadow-md">
-                        <i class="fas fa-trash-alt mr-1"></i>Delete
+                        <i class="fas fa-trash-alt mr-1"></i><span data-i18n="history.delete">Delete</span>
                     </button>
     </div>
                 ` : ''}

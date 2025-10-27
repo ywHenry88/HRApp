@@ -1,14 +1,66 @@
 # HR Leave Management System
 
-**Version:** 2.4.3  
+**Version:** 2.5.1  
 **Technology Stack:** Node.js + Express + Vue 3 + SQL Server 2012  
 **Deployment:** Windows Local Network  
 **Target Users:** ~10 users  
 **Languages:** English / Traditional Chinese (繁體中文)
 
-## 🆕 What's New in v2.4
+## 🆕 What's New in v2.5
 
-**Employee Dashboard Improvements (v2.4.3):**
+**Enhanced Readability (v2.5.1):**
+- **Darker font colors for better readability and accessibility**
+- Fixed Annual Leave number color: now displays in **teal-700** (rich teal)
+- Primary text upgraded to `text-gray-900` (nearly black)
+- Secondary text upgraded to `text-gray-700` (darker gray)
+- All accent colors use -700 variants for better contrast:
+  - Annual Leave: `text-teal-700`
+  - Sick Leave: `text-red-700`
+  - Pending Requests: `text-orange-600`
+- Improved link colors for consistency
+- Better WCAG contrast ratios for accessibility
+
+**Professional Design Overhaul (v2.5.0):**
+- **Consistent typography and spacing throughout the dashboard**
+- Standardized font hierarchy:
+  - `text-lg` (large) for section titles
+  - `text-xs` (extra small) for labels
+  - `text-sm` (small) for data values
+  - `text-3xl` (3x large) for prominent numbers
+- Unified color palette:
+  - `text-gray-800` for primary content
+  - `text-gray-600` for secondary content
+  - Accent colors for leave types (teal, red, yellow)
+- Improved spacing consistency (`p-3`, `gap-3`, `mt-3`, `mt-1`)
+- Enhanced policy box with subtle border for better visual separation
+- Removed cluttered payment-in-lieu note for cleaner appearance
+- Professional, modern, and easy-to-scan layout
+
+**Clean Single-Language Display (v2.4.6):**
+- **Pure language switching - only ONE language displays at a time**
+- "Granted (按年授予)" → Shows "Granted" OR "按年授予" based on selection
+- "Estimate (按比例)" → Shows "Estimate" OR "按比例估算" based on selection
+- "Current Period (當前服務期間)" → Shows "Current Period" OR "當前服務期間"
+- Cleaner, more professional appearance with no mixed-language labels
+- Entire interface now consistently displays in selected language only
+
+**Complete Bilingual Support (v2.4.5):**
+- **ALL text now properly translates between English and Traditional Chinese**
+- Added 15+ new translation keys for complete coverage
+- Employee info (Code, Hire Date, Current Period) fully translatable
+- Leave details (Granted, Estimate, Remaining, Total) fully translatable
+- Policy text properly switches languages
+- Units ("天" / "days") switch correctly based on selected language
+- No more hardcoded text - everything responds to language toggle
+
+**UI Improvements (v2.4.4):**
+- Changed "病假" to "有薪病假" (Paid Sick Leave) for clarity
+- Added "天" unit after numbers: "5天", "1天" (more natural display)
+- Added "(不含以薪代假)" note directly under Annual Leave applied count
+- Icons now properly displayed with distinct icons for each leave type
+- Beach umbrella for Annual Leave, medical briefcase for Sick Leave, clock for Pending Requests
+
+**Data Display Updates (v2.4.3):**
 - Changed to show "Applied" days as the prominent number (more accurate and less confusing)
 - Annual Leave: Shows 5 days Applied (instead of 6 remaining)
 - Sick Leave: Shows 1 day Applied (instead of 3 remaining)
