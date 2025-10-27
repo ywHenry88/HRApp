@@ -49,6 +49,14 @@ const translations = {
         en: 'Employee',
         zh: '員工'
     },
+    'login.demoAdminUser': {
+        en: 'admin',
+        zh: 'admin'
+    },
+    'login.demoEmployeeUser': {
+        en: 'user',
+        zh: 'user'
+    },
     'login.footer': {
         en: 'Secure Login',
         zh: '安全登錄'
@@ -623,9 +631,9 @@ const translations = {
 
 /**
  * CURRENT LANGUAGE
- * Default to English, can be changed by user
+ * Default to Traditional Chinese, can be changed by user
  */
-let currentLang = localStorage.getItem('preferredLanguage') || 'en';
+let currentLang = localStorage.getItem('preferredLanguage') || 'zh';
 
 /**
  * TRANSLATE PAGE
