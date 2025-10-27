@@ -22,34 +22,26 @@
 </head>
 <body class="bg-gray-100">
     <div class="page-container">
-        <div class="flex justify-center items-center min-h-screen bg-gradient-to-br from-[#00AFB9] to-[#4BCBD6] relative">
-            <!-- Language switcher in top right corner -->
-            <div class="fixed top-4 right-4 z-50 lang-switcher">
-                <div class="flex items-center bg-white bg-opacity-20 p-2 rounded-lg text-white shadow-md cursor-pointer" onclick="toggleLangDropdown()">
-                    <i class="fas fa-globe text-white"></i>
-                    <span class="current-lang ml-2" id="currentLangText">中</span>
-                    <i class="fas fa-chevron-down ml-1 text-xs"></i>
-                </div>
-                <div class="dropdown-menu" id="langDropdown">
-                    <div class="dropdown-item" data-lang="en" onclick="switchLanguage('en')">
-                        English
-                    </div>
-                    <div class="dropdown-item active" data-lang="zh" onclick="switchLanguage('zh')">
-                        繁體中文
-                    </div>
-                </div>
-            </div>
-
-            <!-- Decorative floating elements -->
-            <div class="absolute top-10 left-10 w-20 h-20 bg-white bg-opacity-10 rounded-full blur-xl floating-element"></div>
-            <div class="absolute bottom-20 right-20 w-32 h-32 bg-white bg-opacity-10 rounded-full blur-2xl floating-element"></div>
-            <div class="absolute top-1/3 right-10 w-16 h-16 bg-white bg-opacity-10 rounded-full blur-lg floating-element"></div>
+        <div class="flex justify-center items-center min-h-screen login-page-background relative">
+            <!-- Decorative geometric shapes -->
+            <div class="absolute top-20 left-10 w-32 h-32 bg-white bg-opacity-5 rounded-full blur-2xl floating-element"></div>
+            <div class="absolute bottom-32 right-16 w-40 h-40 bg-cyan-300 bg-opacity-10 rounded-full blur-3xl floating-element"></div>
+            <div class="absolute top-1/3 right-12 w-24 h-24 bg-white bg-opacity-5 rounded-full blur-xl floating-element"></div>
+            <div class="absolute bottom-1/4 left-16 w-28 h-28 bg-teal-200 bg-opacity-10 rounded-full blur-2xl floating-element"></div>
+            
+            <!-- Decorative lines -->
+            <div class="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-white to-transparent decorative-line"></div>
+            <div class="absolute top-0 right-1/3 w-px h-full bg-gradient-to-b from-transparent via-white to-transparent decorative-line" style="animation-delay: 2s;"></div>
+            
+            <!-- Mesh gradient overlay circles -->
+            <div class="absolute top-10 right-1/4 w-64 h-64 bg-gradient-radial from-cyan-400 to-transparent opacity-10 rounded-full blur-3xl" style="animation: float 10s ease-in-out infinite;"></div>
+            <div class="absolute bottom-10 left-1/4 w-56 h-56 bg-gradient-radial from-teal-300 to-transparent opacity-10 rounded-full blur-3xl" style="animation: float 12s ease-in-out infinite; animation-delay: 4s;"></div>
             
             <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md mx-4 relative z-10 login-card">
                 <div class="text-center mb-8">
                     <!-- Logo Image -->
                     <div class="flex justify-center mb-4">
-                        <img src="images/logo.png" alt="ETAK Logo" class="h-20 w-auto" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <img src="images/logo.png" alt="ETAK Logo" class="w-auto" style="max-height: 60px; max-width: 280px; object-fit: contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                         <div class="w-16 h-16 bg-[#00AFB9] bg-opacity-10 flex items-center justify-center rounded-full mx-auto" style="display:none;">
                             <i class="fas fa-calendar-check text-[#00AFB9] text-3xl"></i>
                         </div>
@@ -143,6 +135,23 @@
 
                 <div class="mt-6 text-center text-xs text-gray-500">
                     <p>Version 2.1.0 | <span data-i18n="login.footer">Secure Login</span></p>
+                </div>
+            </div>
+
+            <!-- Language switcher at bottom center -->
+            <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 lang-switcher">
+                <div class="flex items-center bg-white bg-opacity-20 p-2 rounded-lg text-white shadow-md cursor-pointer backdrop-blur-sm" onclick="toggleLangDropdown()">
+                    <i class="fas fa-globe text-white"></i>
+                    <span class="current-lang ml-2" id="currentLangText">中</span>
+                    <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                </div>
+                <div class="dropdown-menu" id="langDropdown" style="bottom: 100%; top: auto; margin-top: 0; margin-bottom: 0.5rem; left: 50%; transform: translateX(-50%);">
+                    <div class="dropdown-item" data-lang="en" onclick="switchLanguage('en')">
+                        English
+                    </div>
+                    <div class="dropdown-item active" data-lang="zh" onclick="switchLanguage('zh')">
+                        繁體中文
+                    </div>
                 </div>
             </div>
         </div>

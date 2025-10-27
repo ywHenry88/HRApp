@@ -16,6 +16,7 @@ git commit -m "Description of what you changed"
 
 # Step 4: Push to GitHub
 git push
+
 ```
 
 That's it! Your changes are now on GitHub.
@@ -39,11 +40,13 @@ git status
 ```
 
 **This shows:**
+
 - 🟢 Modified files (in red)
 - ➕ New files
 - ❌ Deleted files
 
 **Example output:**
+
 ```
 On branch main
 Changes not staged for commit:
@@ -57,17 +60,20 @@ Untracked files:
 ### 3️⃣ Add Changes to Staging
 
 **Option A - Add ALL changes (most common):**
+
 ```cmd
 git add .
 ```
 
 **Option B - Add specific files only:**
+
 ```cmd
 git add UI/pages/employee/dashboard.html
 git add UI/js/app.js
 ```
 
 **Option C - Add all files in a folder:**
+
 ```cmd
 git add UI/
 git add backend/
@@ -80,6 +86,7 @@ git commit -m "Your commit message here"
 ```
 
 **Good commit message examples:**
+
 ```cmd
 git commit -m "Fix language switcher in leave-request-multi.html"
 git commit -m "Add Chinese translations for compensatory leave"
@@ -89,6 +96,7 @@ git commit -m "Add new feature: blackout dates management"
 ```
 
 **Bad commit messages (avoid these):**
+
 ```cmd
 git commit -m "update"
 git commit -m "changes"
@@ -102,11 +110,13 @@ git push
 ```
 
 **First time after setup:**
+
 ```cmd
 git push -u origin main
 ```
 
 **After that, just:**
+
 ```cmd
 git push
 ```
@@ -150,6 +160,7 @@ git push
 ## Common Scenarios
 
 ### Scenario 1: Modified Several Files
+
 ```cmd
 git status                          # See what changed
 git add .                          # Add everything
@@ -158,6 +169,7 @@ git push                           # Push to GitHub
 ```
 
 ### Scenario 2: Added New Feature
+
 ```cmd
 git status
 git add .
@@ -166,6 +178,7 @@ git push
 ```
 
 ### Scenario 3: Fixed a Bug
+
 ```cmd
 git status
 git add .
@@ -174,6 +187,7 @@ git push
 ```
 
 ### Scenario 4: Updated Documentation Only
+
 ```cmd
 git status
 git add README.md DEPLOYMENT_GUIDE.md
@@ -182,6 +196,7 @@ git push
 ```
 
 ### Scenario 5: Multiple Small Changes Throughout Day
+
 ```cmd
 # After each logical change:
 git add .
@@ -204,6 +219,7 @@ git push
 ## Best Practices
 
 ### ✅ DO:
+
 - Commit often (after each logical change)
 - Write clear, descriptive commit messages
 - Push to GitHub regularly (at least daily)
@@ -211,6 +227,7 @@ git push
 - Review changes with `git diff` before adding
 
 ### ❌ DON'T:
+
 - Wait weeks before committing
 - Write vague messages like "update" or "fix"
 - Commit sensitive data (.env files, passwords)
@@ -222,6 +239,7 @@ git push
 ## Useful Additional Commands
 
 ### Check Recent Commits
+
 ```cmd
 git log
 # Shows commit history
@@ -231,6 +249,7 @@ git log --oneline
 ```
 
 ### See What Actually Changed
+
 ```cmd
 git diff
 # Shows exact changes before adding
@@ -240,6 +259,7 @@ git diff UI/pages/employee/dashboard.html
 ```
 
 ### Undo Changes (Before Commit)
+
 ```cmd
 git restore filename.txt
 # Discard changes to a file
@@ -249,6 +269,7 @@ git restore .
 ```
 
 ### Undo Last Commit (After Commit, Before Push)
+
 ```cmd
 git reset HEAD~1
 # Undo last commit, keep changes
@@ -258,6 +279,7 @@ git reset --hard HEAD~1
 ```
 
 ### Pull Latest Changes (If Working with Team)
+
 ```cmd
 git pull
 # Get latest changes from GitHub before making your changes
@@ -309,12 +331,14 @@ git pull
 ## Typical Daily Routine
 
 ### Morning (Start of Day)
+
 ```cmd
 cd C:\github\py01\Etak\HRApp1.0
 git pull                    # Get latest changes
 ```
 
 ### During Work (After Each Feature/Fix)
+
 ```cmd
 git status                  # Check changes
 git add .                   # Stage changes
@@ -323,6 +347,7 @@ git push                    # Push to GitHub
 ```
 
 ### End of Day
+
 ```cmd
 git status                  # Make sure everything is committed
 git push                    # Final push of the day
@@ -333,25 +358,32 @@ git push                    # Final push of the day
 ## Troubleshooting
 
 ### Problem: "Nothing to commit"
+
 **Meaning:** No changes detected
 **Solution:** Make sure you saved your files!
 
 ### Problem: "Authentication failed"
+
 **Solution:** Use your Personal Access Token (not password)
+
 ```cmd
 # Generate new token at:
 # https://github.com/settings/tokens
 ```
 
 ### Problem: "Rejected - non-fast-forward"
+
 **Solution:** Pull first, then push
+
 ```cmd
 git pull origin main
 git push
 ```
 
 ### Problem: "Merge conflict"
+
 **Solution:** Resolve conflicts manually
+
 ```cmd
 git pull
 # Edit files to resolve conflicts
@@ -361,7 +393,9 @@ git push
 ```
 
 ### Problem: "Accidentally committed wrong files"
+
 **Solution:** Undo last commit
+
 ```cmd
 git reset HEAD~1
 # Review and re-commit correctly
@@ -371,17 +405,17 @@ git reset HEAD~1
 
 ## Quick Reference Card
 
-| Command | Purpose |
-|---------|---------|
-| `git status` | Check what changed |
-| `git add .` | Add all changes |
-| `git add file.txt` | Add specific file |
-| `git commit -m "msg"` | Commit changes |
-| `git push` | Push to GitHub |
-| `git pull` | Get latest from GitHub |
-| `git log` | View commit history |
-| `git diff` | See exact changes |
-| `git restore file.txt` | Undo changes to file |
+| Command                  | Purpose                |
+| ------------------------ | ---------------------- |
+| `git status`           | Check what changed     |
+| `git add .`            | Add all changes        |
+| `git add file.txt`     | Add specific file      |
+| `git commit -m "msg"`  | Commit changes         |
+| `git push`             | Push to GitHub         |
+| `git pull`             | Get latest from GitHub |
+| `git log`              | View commit history    |
+| `git diff`             | See exact changes      |
+| `git restore file.txt` | Undo changes to file   |
 
 ---
 
@@ -398,4 +432,3 @@ git reset HEAD~1
 
 *For the initial setup, refer to: GITHUB_DEPLOYMENT_GUIDE.md*
 *For quick commands, see: GITHUB_QUICK_START.txt*
-
