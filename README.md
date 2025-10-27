@@ -1,6 +1,6 @@
 # HR Leave Management System
 
-**Version:** 2.4.1  
+**Version:** 2.4.3  
 **Technology Stack:** Node.js + Express + Vue 3 + SQL Server 2012  
 **Deployment:** Windows Local Network  
 **Target Users:** ~10 users  
@@ -8,11 +8,20 @@
 
 ## 🆕 What's New in v2.4
 
-**Employee Dashboard Improvements (v2.4.1):**
+**Employee Dashboard Improvements (v2.4.3):**
+- Changed to show "Applied" days as the prominent number (more accurate and less confusing)
+- Annual Leave: Shows 5 days Applied (instead of 6 remaining)
+- Sick Leave: Shows 1 day Applied (instead of 3 remaining)
+- "Remaining" calculations shown under each breakdown method for clarity
+
+**Dashboard Refinements (v2.4.2):**
+- Smaller font sizes for policy and notes (7px)
+- Larger, more visible icons (48×48px with text-lg)
+
+**Dashboard Updates (v2.4.1):**
 - Show calculation for estimate: "11 + 7.8 = 18.8 days" for transparency
 - Blue borders for Annual and Sick leave cards (visual grouping)
-- Policy box simplified: removed border, smaller font (8px)
-- Icons styled consistently with circular backgrounds
+- Policy box simplified: removed border, smaller font
 
 **Dashboard Redesign (v2.4.0):**
 - Enhanced readability with dark text on white backgrounds (improved name visibility)
