@@ -113,6 +113,18 @@ const translations = {
         en: 'Sick Leave',
         zh: '病假'
     },
+    'leave.applied': {
+        en: 'Applied',
+        zh: '已使用'
+    },
+    'leave.remaining': {
+        en: 'Remaining',
+        zh: '剩餘'
+    },
+    'leave.appliedNote': {
+        en: '5 days applied in current period',
+        zh: '當前服務期間已使用5天'
+    },
     'leave.personal': {
         en: 'Annual Leave',
         zh: '年假'

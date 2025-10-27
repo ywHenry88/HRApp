@@ -1,13 +1,37 @@
 # HR Leave Management System
 
-**Version:** 2.1.0  
+**Version:** 2.4.1  
 **Technology Stack:** Node.js + Express + Vue 3 + SQL Server 2012  
 **Deployment:** Windows Local Network  
 **Target Users:** ~10 users  
 **Languages:** English / Traditional Chinese (繁體中文)
 
-## 🆕 What's New in v2.1
+## 🆕 What's New in v2.4
 
+**Employee Dashboard Improvements (v2.4.1):**
+- Show calculation for estimate: "11 + 7.8 = 18.8 days" for transparency
+- Blue borders for Annual and Sick leave cards (visual grouping)
+- Policy box simplified: removed border, smaller font (8px)
+- Icons styled consistently with circular backgrounds
+
+**Dashboard Redesign (v2.4.0):**
+- Enhanced readability with dark text on white backgrounds (improved name visibility)
+- Consistent data display across all leave types (Applied/Remaining format)
+- Unified visual design with left border accent cards
+- Complete bilingual support with all Chinese translations
+- Streamlined layout by removing redundant Quick Actions
+- Professional and organized mobile-first design
+
+**What's New in v2.3:**
+- Complete dashboard redesign for employee module
+- Cleaner header with integrated date display
+- Better organized leave summary section
+- Enhanced visual hierarchy and spacing
+
+**What's New in v2.2:**
+- **Payment in Lieu (以薪代假)** - Admin can approve leave without deducting leave balance
+
+**What's New in v2.1:**
 - Real-time Hong Kong public holidays fetched from official source
   - English: `https://www.1823.gov.hk/common/ical/en.json`
   - Traditional Chinese: `https://www.1823.gov.hk/common/ical/tc.json`

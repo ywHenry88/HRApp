@@ -1,17 +1,29 @@
 <!DOCTYPE html>
 <!-- 
-    Version: 2.3.0
+    Version: 2.4.1
     Employee Dashboard - HR Leave Management System (Redesigned)
     Description: Professional, clean, and organized mobile-first dashboard
     Features:
-    - Modern gradient welcome card with employee info
+    - Clean white card welcome section with dark text for better readability
     - Clear leave summary with visual hierarchy
-    - Organized annual and sick leave cards
+    - Organized annual and sick leave cards with consistent data display
     - Professional pending requests display
-    - Enhanced quick action buttons with hover effects
     - Team calendar view with month navigation
     - Consistent spacing and visual design
-    - Bilingual support (EN/繁體中文)
+    - Full bilingual support (EN/繁體中文)
+    
+    Changes in v2.4.1:
+    - Show calculation for estimate: "11 + 7.8 = 18.8 days"
+    - Blue borders for both Annual and Sick leave cards (visual grouping)
+    - Policy box: removed border, reduced font to 8px
+    - Icons styled consistently across all cards
+    
+    Changes in v2.4.0:
+    - Fixed name visibility (white background with dark text)
+    - Unified leave display (both show Applied/Remaining)
+    - Removed Quick Actions (duplicate of bottom nav)
+    - Reduced font sizes for notes and policy
+    - Added complete Chinese translations
 -->
 <html lang="en">
 <head>
@@ -69,22 +81,22 @@
         <main class="page-content p-4">
             <!-- Welcome Section -->
             <div class="mb-4">
-                <div class="bg-gradient-to-r from-[#00AFB9] to-[#4BCBD6] p-5 rounded-xl shadow-md text-white">
-                    <h2 class="text-lg font-bold mb-3">
-                        <span data-i18n="dashboard.welcome">Welcome</span>, <span id="employeeName">Wong Pak Kun</span>
+                <div class="bg-white p-5 rounded-xl shadow-md border-l-4 border-[#00AFB9]">
+                    <h2 class="text-base font-bold text-gray-800 mb-3">
+                        <span data-i18n="dashboard.welcome">Welcome</span>, <span id="employeeName" class="text-[#00AFB9]">Wong Pak Kun (黃柏根)</span>
                     </h2>
                     <div class="grid grid-cols-2 gap-3 text-xs">
-                        <div class="bg-white bg-opacity-20 p-2 rounded-lg">
-                            <div class="opacity-90 mb-1">Employee Code</div>
-                            <div class="font-semibold text-sm" id="employeeCode">L003</div>
+                        <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            <div class="text-gray-600 mb-1 font-medium">Employee Code</div>
+                            <div class="font-bold text-sm text-gray-800" id="employeeCode">L003</div>
                         </div>
-                        <div class="bg-white bg-opacity-20 p-2 rounded-lg">
-                            <div class="opacity-90 mb-1">Hire Date</div>
-                            <div class="font-semibold text-sm" id="hireDate">01/04/1995</div>
+                        <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            <div class="text-gray-600 mb-1 font-medium">Hire Date</div>
+                            <div class="font-bold text-sm text-gray-800" id="hireDate">01/04/1995</div>
                         </div>
-                        <div class="col-span-2 bg-white bg-opacity-20 p-2 rounded-lg">
-                            <div class="opacity-90 mb-1">Current Period (當前服務期間)</div>
-                            <div class="font-semibold text-sm" id="currentPeriod">2025-04-01 → 2026-03-31</div>
+                        <div class="col-span-2 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            <div class="text-gray-600 mb-1 font-medium">Current Period (當前服務期間)</div>
+                            <div class="font-bold text-sm text-gray-800" id="currentPeriod">2025-04-01 → 2026-03-31</div>
                         </div>
                     </div>
                 </div>
@@ -92,70 +104,66 @@
 
             <!-- Leave Summary Section -->
             <div class="mb-4">
-                <div class="bg-white p-4 rounded-xl shadow-md">
-                    <h3 class="text-sm font-semibold text-gray-800 mb-3 flex items-center">
-                        <i class="fas fa-chart-bar text-[#00AFB9] mr-2"></i>
-                        Leave Summary
-                    </h3>
-                    
-                    <!-- Annual Leave -->
-                    <div class="mb-4 p-4 rounded-lg bg-gradient-to-br from-[#00AFB9]/5 to-[#00AFB9]/10 border border-[#00AFB9]/20">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center">
-                                <div class="w-10 h-10 rounded-full bg-[#00AFB9] flex items-center justify-center mr-3">
-                                    <i class="fas fa-calendar-alt text-white text-sm"></i>
-                                </div>
-                                <span class="text-sm font-semibold text-gray-800">Annual Leave</span>
+                <!-- Annual Leave -->
+                <div class="bg-white p-4 rounded-xl shadow-md border-l-4 border-blue-500 mb-3">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-[#00AFB9] flex items-center justify-center mr-3">
+                                <i class="fas fa-calendar-alt text-white text-sm"></i>
                             </div>
-                            <div class="text-right">
-                                <div class="text-2xl font-bold text-[#00AFB9]">5</div>
-                                <div class="text-[10px] text-gray-500">days applied</div>
+                            <div>
+                                <div class="text-sm font-semibold text-gray-800" data-i18n="leave.annual">Annual Leave</div>
+                                <div class="text-xs text-gray-600"><span data-i18n="leave.applied">Applied</span>: 5 / 11 days</div>
                             </div>
                         </div>
-                        
-                        <div class="grid grid-cols-2 gap-2 text-xs">
-                            <div class="bg-white p-2 rounded-lg">
-                                <div class="text-gray-600 mb-1">Granted (按年授予)</div>
-                                <div class="font-bold text-[#00AFB9]">11 days</div>
-                            </div>
-                            <div class="bg-white p-2 rounded-lg">
-                                <div class="text-gray-600 mb-1">Estimate (按比例)</div>
-                                <div class="font-bold text-[#00AFB9]">18.8 days</div>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-2 text-[10px] text-gray-600 bg-white/50 p-2 rounded">
-                            <i class="fas fa-info-circle text-[#00AFB9] mr-1"></i>
-                            5 days applied in current period (不含以薪代假)
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-[#00AFB9]">6</div>
+                            <div class="text-[9px] text-gray-500" data-i18n="leave.remaining">Remaining</div>
                         </div>
                     </div>
                     
-                    <!-- Sick Leave -->
-                    <div class="p-4 rounded-lg bg-gradient-to-br from-[#FF6B6B]/5 to-[#FF6B6B]/10 border border-[#FF6B6B]/20">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <div class="w-10 h-10 rounded-full bg-[#FF6B6B] flex items-center justify-center mr-3">
-                                    <i class="fas fa-procedures text-white text-sm"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-800">Sick Leave</div>
-                                    <div class="text-xs text-gray-600">1 / 4 days used</div>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-2xl font-bold text-[#FF6B6B]">3</div>
-                                <div class="text-[10px] text-gray-500">days remaining</div>
-                            </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs bg-gray-50 p-2 rounded-lg">
+                        <div>
+                            <div class="text-gray-600 mb-1">Granted (按年授予)</div>
+                            <div class="font-bold text-[#00AFB9]">11 days</div>
+                        </div>
+                        <div>
+                            <div class="text-gray-600 mb-1">Estimate (按比例)</div>
+                            <div class="font-bold text-[#00AFB9]">11 + 7.8 = 18.8 days</div>
                         </div>
                     </div>
                     
-                    <!-- Policy Info -->
-                    <div class="mt-3 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400">
-                        <div class="text-[11px] text-blue-900 leading-relaxed">
-                            <strong>Policy:</strong> Annual leave has no expiry. Split/pay-in-lieu handled case-by-case.
-                            <br/>
-                            <span class="text-blue-800">年假不設到期。分拆／以薪代假由管理員逐案處理。</span>
+                    <div class="mt-2 text-[9px] text-gray-500">
+                        <i class="fas fa-info-circle text-[#00AFB9] mr-1"></i>
+                        <span data-i18n="leave.appliedNote">5 days applied in current period</span> (不含以薪代假)
+                    </div>
+                </div>
+                
+                <!-- Sick Leave -->
+                <div class="bg-white p-4 rounded-xl shadow-md border-l-4 border-blue-500 mb-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-[#FF6B6B] flex items-center justify-center mr-3">
+                                <i class="fas fa-procedures text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold text-gray-800" data-i18n="leave.sick">Sick Leave</div>
+                                <div class="text-xs text-gray-600"><span data-i18n="leave.applied">Applied</span>: 1 / 4 days</div>
+                            </div>
                         </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-[#FF6B6B]">3</div>
+                            <div class="text-[9px] text-gray-500" data-i18n="leave.remaining">Remaining</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Policy Info -->
+                <div class="bg-blue-50 p-3 rounded-xl">
+                    <div class="text-[8px] text-blue-900 leading-relaxed">
+                        <strong>Policy:</strong> Annual leave has no expiry. Split/pay-in-lieu handled case-by-case.
+                        <br/>
+                        <span class="text-blue-800">年假不設到期。分拆／以薪代假由管理員逐案處理。</span>
                     </div>
                 </div>
             </div>
@@ -165,39 +173,21 @@
                 <div class="bg-white p-4 rounded-xl shadow-md border-l-4 border-yellow-400">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
-                            <div class="w-12 h-12 rounded-full bg-yellow-50 flex items-center justify-center mr-3">
-                                <i class="fas fa-clock text-yellow-600 text-lg"></i>
+                            <div class="w-10 h-10 rounded-full bg-yellow-50 flex items-center justify-center mr-3">
+                                <i class="fas fa-clock text-yellow-600 text-sm"></i>
                             </div>
                             <div>
-                                <div class="text-sm font-semibold text-gray-800">Pending Requests</div>
-                                <div class="text-xs text-gray-600">Awaiting approval</div>
+                                <div class="text-sm font-semibold text-gray-800" data-i18n="dashboard.pendingRequests">Pending Requests</div>
+                                <div class="text-xs text-gray-600" data-i18n="dashboard.awaitingApproval">Awaiting approval</div>
                             </div>
                         </div>
                         <div class="text-right">
                             <div class="text-3xl font-bold text-yellow-600">2</div>
                             <a href="leave-history.html" class="text-xs text-[#00AFB9] hover:underline flex items-center justify-end mt-1">
-                                View all <i class="fas fa-arrow-right ml-1"></i>
+                                <span data-i18n="dashboard.viewAll">View all</span> <i class="fas fa-arrow-right ml-1"></i>
                             </a>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="mb-4">
-                <div class="grid grid-cols-2 gap-3">
-                    <a href="leave-request-multi.html" class="bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white p-5 rounded-xl shadow-lg flex flex-col items-center justify-center transition-all transform hover:scale-105">
-                        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center mb-2">
-                            <i class="fas fa-calendar-plus text-xl"></i>
-                        </div>
-                        <span class="text-sm font-semibold">Request Leave</span>
-                    </a>
-                    <a href="leave-history.html" class="bg-white hover:bg-gray-50 border-2 border-gray-200 text-gray-800 p-5 rounded-xl shadow-md flex flex-col items-center justify-center transition-all transform hover:scale-105">
-                        <div class="w-12 h-12 bg-[#00AFB9]/10 rounded-full flex items-center justify-center mb-2">
-                            <i class="fas fa-history text-xl text-[#00AFB9]"></i>
-                        </div>
-                        <span class="text-sm font-semibold">View History</span>
-                    </a>
                 </div>
             </div>
 
