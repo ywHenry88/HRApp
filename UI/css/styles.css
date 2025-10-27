@@ -13,7 +13,7 @@
 
 /* Login Page Background */
 .login-page-background {
-    background: linear-gradient(135deg, #0891b2 0%, #00AFB9 25%, #22d3ee 50%, #4BCBD6 75%, #67e8f9 100%);
+    background: linear-gradient(135deg, #a5f3fc 0%, #67e8f9 15%, #22d3ee 35%, #4BCBD6 60%, #00AFB9 85%, #0891b2 100%);
     background-size: 400% 400%;
     animation: gradientShift 15s ease infinite;
     position: relative;
@@ -239,7 +239,7 @@
     background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
 }
 
-/* Language switcher at bottom center - fixed positioning */
+/* Language switcher at bottom center - simple button */
 .login-lang-switcher {
     position: fixed;
     bottom: 20px;
@@ -249,10 +249,12 @@
     user-select: none;
 }
 
-.login-lang-switcher .dropdown-menu {
-    position: absolute;
-    min-width: 120px;
-    backdrop-filter: blur(10px);
+.login-lang-switcher button {
+    font-size: 15px;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Language switcher enhancement */

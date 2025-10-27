@@ -30,15 +30,15 @@
             <nav class="sidebar-nav">
                 <a href="dashboard.html" class="sidebar-nav-item">
                     <i class="fas fa-home"></i>
-                    <span>Dashboard</span>
+                    <span data-i18n="admin.dashboard">Dashboard</span>
                 </a>
                 <a href="approve-leaves.html" class="sidebar-nav-item">
                     <i class="fas fa-check-circle"></i>
-                    <span>Approve Leaves</span>
+                    <span data-i18n="admin.approveLeaves">Approve Leaves</span>
                 </a>
                 <a href="manage-employees.html" class="sidebar-nav-item">
                     <i class="fas fa-users"></i>
-                    <span>Manage Employees</span>
+                    <span data-i18n="admin.manageEmployees">Manage Employees</span>
                 </a>
                 <a href="compensatory-leave.html" class="sidebar-nav-item">
                     <i class="fas fa-plus-circle"></i>
@@ -46,7 +46,7 @@
                 </a>
                 <a href="leave-settings.html" class="sidebar-nav-item">
                     <i class="fas fa-cog"></i>
-                    <span>Leave Settings</span>
+                    <span data-i18n="admin.leaveSettings">Leave Settings</span>
                 </a>
                 <a href="blackout-dates.html" class="sidebar-nav-item active">
                     <i class="fas fa-ban"></i>
@@ -54,13 +54,13 @@
                 </a>
                 <a href="reports.html" class="sidebar-nav-item">
                     <i class="fas fa-chart-bar"></i>
-                    <span>Reports</span>
+                    <span data-i18n="admin.reports">Reports</span>
                 </a>
                 
                 <div class="mt-auto pt-4 border-t border-white border-opacity-10">
                     <a href="../login.html" onclick="logout()" class="sidebar-nav-item">
                         <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
+                        <span data-i18n="nav.logout">Logout</span>
                     </a>
                 </div>
             </nav>
@@ -106,9 +106,9 @@
                     <div class="flex items-start">
                         <i class="fas fa-info-circle text-blue-500 mt-0.5 mr-3 text-xl"></i>
                         <div>
-                            <h3 class="font-bold text-blue-900 mb-1">What are Blackout Dates?</h3>
-                            <p class="text-sm text-blue-700">
-                                Blackout dates are days when employees <strong>cannot</strong> apply for leave. 
+                            <h3 class="font-bold text-blue-900 mb-1" data-i18n="blackout.infoTitle">What are Blackout Dates?</h3>
+                            <p class="text-sm text-blue-700" data-i18n="blackout.infoDesc">
+                                Blackout dates are days when employees cannot apply for leave. 
                                 By default, the day before each public holiday is a blackout date. 
                                 You can add custom blackout dates or auto-generate them from holidays.
                             </p>
@@ -121,17 +121,17 @@
                     <button onclick="showAddModal()" 
                         class="bg-[#00AFB9] hover:bg-[#009ba3] text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center">
                         <i class="fas fa-plus-circle mr-2"></i>
-                        Add Blackout Date
+                        <span data-i18n="blackout.addButton">Add Blackout Date</span>
                     </button>
                     <button onclick="showAutoGenerateModal()" 
                         class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center">
                         <i class="fas fa-magic mr-2"></i>
-                        Auto-Generate from Holidays
+                        <span data-i18n="blackout.autoGenerate">Auto-Generate from Holidays</span>
                     </button>
                     <button onclick="exportBlackoutDates()" 
                         class="bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center">
                         <i class="fas fa-file-export mr-2"></i>
-                        Export List
+                        <span data-i18n="blackout.exportList">Export List</span>
                     </button>
                 </div>
 
@@ -140,7 +140,7 @@
                     <div class="bg-white p-5 rounded-lg shadow-md">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-gray-600 text-sm">Total Blackout Dates</p>
+                                <p class="text-gray-600 text-sm" data-i18n="blackout.totalDates">Total Blackout Dates</p>
                                 <p class="text-3xl font-bold text-[#00AFB9]" id="totalBlackoutDates">12</p>
                             </div>
                             <div class="bg-red-100 p-3 rounded-full">
@@ -151,7 +151,7 @@
                     <div class="bg-white p-5 rounded-lg shadow-md">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-gray-600 text-sm">This Month</p>
+                                <p class="text-gray-600 text-sm" data-i18n="blackout.thisMonth">This Month</p>
                                 <p class="text-3xl font-bold text-yellow-600" id="thisMonthBlackoutDates">2</p>
                             </div>
                             <div class="bg-yellow-100 p-3 rounded-full">
@@ -162,7 +162,7 @@
                     <div class="bg-white p-5 rounded-lg shadow-md">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-gray-600 text-sm">Upcoming</p>
+                                <p class="text-gray-600 text-sm" data-i18n="blackout.upcoming">Upcoming</p>
                                 <p class="text-3xl font-bold text-blue-600" id="upcomingBlackoutDates">5</p>
                             </div>
                             <div class="bg-blue-100 p-3 rounded-full">
@@ -176,15 +176,15 @@
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <div class="p-5 border-b border-gray-200">
                         <div class="flex items-center justify-between">
-                            <h2 class="text-lg font-bold text-gray-800">Blackout Dates List</h2>
+                            <h2 class="text-lg font-bold text-gray-800" data-i18n="blackout.listTitle">Blackout Dates List</h2>
                             <div class="flex gap-2">
                                 <select id="yearFilter" onchange="filterBlackoutDates()"
                                     class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
-                                    <option value="all">All Years</option>
+                                    <option value="all" data-i18n="blackout.allYears">All Years</option>
                                     <option value="2025" selected>2025</option>
                                     <option value="2026">2026</option>
                                 </select>
-                                <input type="text" id="searchBox" placeholder="Search..." onkeyup="filterBlackoutDates()"
+                                <input type="text" id="searchBox" data-i18n-placeholder="blackout.searchPlaceholder" placeholder="Search..." onkeyup="filterBlackoutDates()"
                                     class="px-3 py-2 border border-gray-300 rounded-lg text-sm w-48">
                             </div>
                         </div>
@@ -194,12 +194,12 @@
                         <table class="w-full">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Day</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason (EN)</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason (ZH)</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created By</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-i18n="blackout.date">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-i18n="blackout.day">Day</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-i18n="blackout.reasonEn">Reason (EN)</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-i18n="blackout.reasonZh">Reason (ZH)</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-i18n="blackout.createdBy">Created By</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-i18n="admin.actions">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="blackoutDatesTable" class="bg-white divide-y divide-gray-200">
@@ -258,7 +258,7 @@
 
                     <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
                         <p class="text-sm text-gray-600">
-                            Showing <strong>4</strong> of <strong>12</strong> blackout dates
+                            <span data-i18n="blackout.showing">Showing</span> <strong>4</strong> <span data-i18n="blackout.of">of</span> <strong>12</strong> <span data-i18n="blackout.blackoutDates">blackout dates</span>
                         </p>
                     </div>
                 </div>
@@ -270,40 +270,40 @@
     <div id="addModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-bold text-gray-900">Add Blackout Date</h3>
+                <h3 class="text-lg font-bold text-gray-900" data-i18n="blackout.modalAddTitle">Add Blackout Date</h3>
             </div>
             <form id="addBlackoutForm" class="p-6 space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Date <span class="text-red-500">*</span>
+                        <span data-i18n="blackout.dateLabel">Date</span> <span class="text-red-500">*</span>
                     </label>
                     <input type="date" id="blackoutDate" required
                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Reason (English) <span class="text-red-500">*</span>
+                        <span data-i18n="blackout.reasonEnLabel">Reason (English)</span> <span class="text-red-500">*</span>
                     </label>
                     <input type="text" id="reasonEN" required maxlength="200"
-                        placeholder="e.g., Day before holiday"
+                        data-i18n-placeholder="blackout.reasonEnPlaceholder" placeholder="e.g., Day before holiday"
                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Reason (Traditional Chinese) <span class="text-red-500">*</span>
+                        <span data-i18n="blackout.reasonZhLabel">Reason (Traditional Chinese)</span> <span class="text-red-500">*</span>
                     </label>
                     <input type="text" id="reasonZH" required maxlength="200"
-                        placeholder="例如：假日前一天"
+                        data-i18n-placeholder="blackout.reasonZhPlaceholder" placeholder="例如：假日前一天"
                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
                 </div>
                 <div class="flex gap-2 pt-4">
                     <button type="button" onclick="closeAddModal()"
                         class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                        Cancel
+                        <span data-i18n="common.cancel">Cancel</span>
                     </button>
                     <button type="submit"
                         class="flex-1 px-4 py-2 bg-[#00AFB9] text-white rounded-lg hover:bg-[#009ba3]">
-                        Add Blackout Date
+                        <span data-i18n="blackout.addButton">Add Blackout Date</span>
                     </button>
                 </div>
             </form>
@@ -314,15 +314,15 @@
     <div id="autoGenerateModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
             <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-bold text-gray-900">Auto-Generate Blackout Dates</h3>
+                <h3 class="text-lg font-bold text-gray-900" data-i18n="blackout.modalAutoGenTitle">Auto-Generate Blackout Dates</h3>
             </div>
             <div class="p-6">
-                <p class="text-sm text-gray-600 mb-4">
+                <p class="text-sm text-gray-600 mb-4" data-i18n="blackout.autoGenDesc">
                     This will automatically create blackout dates for the day before each public holiday in the selected year.
                 </p>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Year <span class="text-red-500">*</span>
+                        <span data-i18n="blackout.yearLabel">Year</span> <span class="text-red-500">*</span>
                     </label>
                     <select id="autoGenerateYear"
                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00AFB9] focus:border-[#00AFB9]">
@@ -334,18 +334,18 @@
                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
                     <p class="text-xs text-yellow-700">
                         <i class="fas fa-exclamation-triangle mr-1"></i>
-                        Existing blackout dates will not be duplicated.
+                        <span data-i18n="blackout.noDuplicates">Existing blackout dates will not be duplicated.</span>
                     </p>
                 </div>
                 <div class="flex gap-2">
                     <button type="button" onclick="closeAutoGenerateModal()"
                         class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                        Cancel
+                        <span data-i18n="common.cancel">Cancel</span>
                     </button>
                     <button onclick="autoGenerateBlackoutDates()"
                         class="flex-1 px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">
                         <i class="fas fa-magic mr-1"></i>
-                        Generate
+                        <span data-i18n="blackout.generate">Generate</span>
                     </button>
                 </div>
             </div>

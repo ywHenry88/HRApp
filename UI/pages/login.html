@@ -141,21 +141,12 @@
                 </div>
             </div>
 
-            <!-- Language switcher at bottom center -->
+            <!-- Language switcher at bottom - simple toggle button -->
             <div class="login-lang-switcher">
-                <div class="flex items-center bg-white bg-opacity-25 p-2.5 rounded-lg text-white shadow-lg cursor-pointer backdrop-blur-sm hover:bg-opacity-30 transition-all" onclick="toggleLangDropdown()">
-                    <i class="fas fa-globe text-white text-base"></i>
-                    <span class="current-lang ml-2 font-medium" id="currentLangText">中</span>
-                    <i class="fas fa-chevron-down ml-1.5 text-xs"></i>
-                </div>
-                <div class="dropdown-menu" id="langDropdown" style="bottom: 100%; top: auto; margin-bottom: 0.5rem; left: 50%; transform: translateX(-50%);">
-                    <div class="dropdown-item" data-lang="en" onclick="switchLanguage('en')">
-                        English
-                    </div>
-                    <div class="dropdown-item active" data-lang="zh" onclick="switchLanguage('zh')">
-                        繁體中文
-                    </div>
-                </div>
+                <button class="flex items-center gap-2 bg-white bg-opacity-20 px-4 py-2 rounded-full text-white shadow-lg backdrop-blur-sm hover:bg-opacity-30 transition-all border border-white border-opacity-30" onclick="toggleLanguageSimple()">
+                    <i class="fas fa-globe text-white"></i>
+                    <span class="font-medium" id="currentLangText">中</span>
+                </button>
             </div>
         </div>
     </div>
@@ -239,6 +230,13 @@
             }, 3000);
         }
         
+        // Simple language toggle function
+        function toggleLanguageSimple() {
+            const currentLang = localStorage.getItem('preferredLanguage') || 'zh';
+            const newLang = currentLang === 'zh' ? 'en' : 'zh';
+            switchLanguage(newLang);
+        }
+
         // Handle enter key press in form
         document.getElementById('login-form').addEventListener('submit', login);
 

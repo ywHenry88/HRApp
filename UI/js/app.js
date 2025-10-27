@@ -581,6 +581,158 @@ const translations = {
         en: 'Blackout Dates Management',
         zh: '禁止請假日期管理'
     },
+    'admin.leaveSettings': {
+        en: 'Leave Settings',
+        zh: '請假設置'
+    },
+
+    // Blackout Dates Page
+    'blackout.infoTitle': {
+        en: 'What are Blackout Dates?',
+        zh: '什麼是禁止請假日期？'
+    },
+    'blackout.infoDesc': {
+        en: 'Blackout dates are days when employees cannot apply for leave. By default, the day before each public holiday is a blackout date. You can add custom blackout dates or auto-generate them from holidays.',
+        zh: '禁止請假日期是員工無法申請請假的日子。預設情況下，每個公眾假期的前一天都是禁止請假日期。您可以新增自訂的禁止請假日期，或從假期自動生成。'
+    },
+    'blackout.addButton': {
+        en: 'Add Blackout Date',
+        zh: '新增禁止請假日期'
+    },
+    'blackout.autoGenerate': {
+        en: 'Auto-Generate from Holidays',
+        zh: '從假期自動生成'
+    },
+    'blackout.exportList': {
+        en: 'Export List',
+        zh: '匯出清單'
+    },
+    'blackout.totalDates': {
+        en: 'Total Blackout Dates',
+        zh: '禁止請假日期總數'
+    },
+    'blackout.thisMonth': {
+        en: 'This Month',
+        zh: '本月'
+    },
+    'blackout.upcoming': {
+        en: 'Upcoming',
+        zh: '即將到來'
+    },
+    'blackout.listTitle': {
+        en: 'Blackout Dates List',
+        zh: '禁止請假日期清單'
+    },
+    'blackout.allYears': {
+        en: 'All Years',
+        zh: '所有年份'
+    },
+    'blackout.searchPlaceholder': {
+        en: 'Search...',
+        zh: '搜尋...'
+    },
+    'blackout.date': {
+        en: 'Date',
+        zh: '日期'
+    },
+    'blackout.day': {
+        en: 'Day',
+        zh: '星期'
+    },
+    'blackout.reasonEn': {
+        en: 'Reason (EN)',
+        zh: '原因 (英文)'
+    },
+    'blackout.reasonZh': {
+        en: 'Reason (ZH)',
+        zh: '原因 (中文)'
+    },
+    'blackout.createdBy': {
+        en: 'Created By',
+        zh: '建立者'
+    },
+    'blackout.showing': {
+        en: 'Showing',
+        zh: '顯示'
+    },
+    'blackout.of': {
+        en: 'of',
+        zh: '共'
+    },
+    'blackout.blackoutDates': {
+        en: 'blackout dates',
+        zh: '個禁止請假日期'
+    },
+    'blackout.modalAddTitle': {
+        en: 'Add Blackout Date',
+        zh: '新增禁止請假日期'
+    },
+    'blackout.dateLabel': {
+        en: 'Date',
+        zh: '日期'
+    },
+    'blackout.reasonEnLabel': {
+        en: 'Reason (English)',
+        zh: '原因（英文）'
+    },
+    'blackout.reasonZhLabel': {
+        en: 'Reason (Traditional Chinese)',
+        zh: '原因（繁體中文）'
+    },
+    'blackout.reasonEnPlaceholder': {
+        en: 'e.g., Day before holiday',
+        zh: '例如：假日前一天'
+    },
+    'blackout.reasonZhPlaceholder': {
+        en: 'e.g., 假日前一天',
+        zh: '例如：假日前一天'
+    },
+    'blackout.modalAutoGenTitle': {
+        en: 'Auto-Generate Blackout Dates',
+        zh: '自動生成禁止請假日期'
+    },
+    'blackout.autoGenDesc': {
+        en: 'This will automatically create blackout dates for the day before each public holiday in the selected year.',
+        zh: '這將自動為所選年份的每個公眾假期前一天建立禁止請假日期。'
+    },
+    'blackout.yearLabel': {
+        en: 'Year',
+        zh: '年份'
+    },
+    'blackout.noDuplicates': {
+        en: 'Existing blackout dates will not be duplicated.',
+        zh: '現有的禁止請假日期不會重複。'
+    },
+    'blackout.generate': {
+        en: 'Generate',
+        zh: '生成'
+    },
+
+    // Compensatory Leave Page
+    'comp.infoTitle': {
+        en: 'Compensatory Leave Management',
+        zh: '補假管理'
+    },
+    'comp.info1': {
+        en: 'Positive days (+): Grant compensatory leave',
+        zh: '正數天數 (+)：授予補假'
+    },
+    'comp.info2': {
+        en: 'Negative days (-): Deduct leave balance',
+        zh: '負數天數 (-)：扣除假期'
+    },
+    'comp.info3': {
+        en: 'Decimals allowed (e.g., +2.5, -1.5 days)',
+        zh: '可使用小數（例如：+2.5、-1.5天）'
+    },
+    'comp.days': {
+        en: 'Days',
+        zh: '天數'
+    },
+    'comp.daysHelper': {
+        en: '(+ add / - deduct)',
+        zh: '(+ 補假 / - 扣假)'
+    },
 
     // Common
     'common.cancel': {
