@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <!-- 
+    Version: 2.2.1
     Employee Dashboard - HR Leave Management System
     Description: Mobile-first employee dashboard with leave balance and calendar
     Features:
-    - Real-time leave balance display (Annual, Sick, Personal, Study)
+    - Real-time leave balance display with 按年授予 and 按比例估算
+    - Shows hire date and current service period (服務期間)
+    - Today's date in top header
     - Pending requests summary
     - Team calendar view with month navigation
     - Quick action buttons
@@ -27,6 +30,9 @@
                 <h1 class="text-lg font-bold" data-i18n="dashboard.title">Home</h1>
             </div>
             <div class="header-right">
+                <!-- Today's Date -->
+                <div class="text-white text-xs mr-3" id="currentDate">Monday, October 20, 2025</div>
+                
                 <!-- Language Switcher -->
                 <div class="lang-switcher relative">
                     <div class="flex items-center cursor-pointer" onclick="toggleLangDropdown()">
@@ -68,8 +74,10 @@
                     <h2 class="text-lg font-medium mb-2">
                         <span data-i18n="dashboard.welcome">Welcome</span>, <span id="employeeName">Wong Pak Kun (黃柏根)</span> <span id="employeeCode" class="text-gray-600">L003</span>
                     </h2>
-                    <p class="text-sm text-gray-600" id="currentDate">Monday, October 20, 2025</p>
-                    <p class="text-xs text-gray-500 mt-1"><i class="fas fa-database mr-1"></i>From SQL Server tb_Users</p>
+                    <div class="text-sm text-gray-600 mt-2">
+                        <p><span class="font-medium">Hire date (入職日期):</span> <span id="hireDate">01/04/1995</span></p>
+                        <p class="mt-1"><span class="font-medium">Current period (當前服務期間):</span> <span id="currentPeriod">2025-04-01 → 2026-03-31</span></p>
+                    </div>
                 </div>
             </div>
 
@@ -87,16 +95,17 @@
                                 </div>
                                 <span class="text-xs text-gray-700" data-i18n="leave.annual">Annual Leave</span>
                             </div>
-                            <div class="flex items-baseline">
-                                <span id="annualRemaining" class="text-2xl font-bold text-[#00AFB9]">--</span>
-                                <span class="text-xs text-gray-500 ml-1">/ <span id="annualTotal">--</span> days</span>
+                            <div class="flex items-baseline mb-2">
+                                <span class="text-2xl font-bold text-[#00AFB9]">5</span>
+                                <div class="ml-2 text-xs leading-tight">
+                                    <div>/ 11 days <span class="text-[10px] text-gray-500">(按年授予)</span></div>
+                                    <div class="text-[10px] text-gray-600">/ 18.8 days (11+7.8) <span class="text-gray-500">(按比例估算)</span></div>
+                                </div>
                             </div>
-                            <div class="mt-1 text-[11px] text-gray-600">
-                                <span data-i18n="leave.breakdown">Breakdown</span>:
-                                <span id="annualDays">--</span>
-                                + <span id="carryForward">--</span>
-                                + <span id="compDays">--</span>
-                                − <span id="annualUsed">--</span>
+                            <div class="mt-1 pt-2 border-t border-gray-200 text-[10px] text-gray-500">
+                                <i class="fas fa-info-circle mr-1"></i>5 days applied in current period
+                                <br/>
+                                <span class="text-[9px]">當前期間已申請5天（不含以薪代假）</span>
                             </div>
                         </div>
                         
@@ -109,8 +118,8 @@
                                 <span class="text-xs text-gray-700" data-i18n="leave.sick">Sick Leave</span>
                             </div>
                             <div class="flex items-baseline">
-                                <span class="text-2xl font-bold text-[#FF6B6B]">8</span>
-                                <span class="text-xs text-gray-500 ml-1">/ 10 days</span>
+                                <span class="text-2xl font-bold text-[#FF6B6B]">1</span>
+                                <span class="text-xs text-gray-500 ml-1">/ 4 days</span>
                             </div>
                         </div>
                         
