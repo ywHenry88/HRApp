@@ -573,6 +573,14 @@ const translations = {
         en: 'Leave Allocation',
         zh: '假期分配'
     },
+    'admin.blackoutDates': {
+        en: 'Blackout Dates',
+        zh: '禁止請假日期'
+    },
+    'admin.blackoutManagement': {
+        en: 'Blackout Dates Management',
+        zh: '禁止請假日期管理'
+    },
 
     // Common
     'common.cancel': {
