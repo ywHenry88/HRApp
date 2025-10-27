@@ -1,6 +1,7 @@
 # GitHub Deployment Guide - HR Leave Management System
 
 ## Overview
+
 This guide explains how to deploy the HR Leave Management System to GitHub, including setting up the repository, pushing code, and optionally deploying the UI to GitHub Pages.
 
 ---
@@ -8,13 +9,14 @@ This guide explains how to deploy the HR Leave Management System to GitHub, incl
 ## Prerequisites
 
 1. **Git installed** on your computer
+
    - Check: `git --version`
    - Download: https://git-scm.com/downloads
-
 2. **GitHub account**
-   - Sign up at: https://github.com
 
+   - Sign up at: https://github.com
 3. **GitHub CLI (optional but recommended)**
+
    - Download: https://cli.github.com/
 
 ---
@@ -26,6 +28,7 @@ Open Command Prompt in your project directory (`C:\github\py01\Etak\HRApp1.0`):
 ```cmd
 cd C:\github\py01\Etak\HRApp1.0
 git init
+
 ```
 
 ---
@@ -247,22 +250,23 @@ git push
 ### ⚠️ Before Pushing to GitHub
 
 1. **Remove ALL sensitive data:**
+
    - Database passwords
    - API keys
    - Secret tokens
    - Production credentials
-
 2. **Check `backend/.env` is NOT committed:**
+
    ```cmd
    git status
    # Should NOT show backend/.env or any .env files
    ```
-
 3. **Review `backend/env.example.txt`:**
+
    - Should contain ONLY example/placeholder values
    - No real credentials
-
 4. **SQL Server Connection:**
+
    - Database credentials should be in `.env` (ignored by git)
    - SQL schema files are OK to commit
    - Do NOT commit actual database files or dumps with real data
@@ -317,6 +321,7 @@ Add to top of `README.md`:
 ### 2. Add Topics/Tags
 
 In GitHub repository settings:
+
 - `leave-management`
 - `hr-system`
 - `nodejs`
@@ -377,6 +382,7 @@ test: Add unit tests for leave controller
 ### Issue: "Failed to push - rejected"
 
 **Solution:**
+
 ```cmd
 git pull origin main --rebase
 git push origin main
@@ -385,6 +391,7 @@ git push origin main
 ### Issue: "Large files warning"
 
 **Solution:**
+
 ```cmd
 # Remove large file from git history
 git rm --cached path/to/large/file
@@ -395,11 +402,13 @@ git commit -m "Remove large file"
 ### Issue: "Authentication failed"
 
 **Solution 1 - Personal Access Token:**
+
 1. GitHub → Settings → Developer settings → Personal access tokens
 2. Generate new token with `repo` scope
 3. Use token as password when pushing
 
 **Solution 2 - SSH Key:**
+
 ```cmd
 # Generate SSH key
 ssh-keygen -t ed25519 -C "your.email@example.com"
@@ -469,4 +478,3 @@ git revert commit-hash      # Revert specific commit
 
 *Document Created: 2025-10-27*
 *Version: 1.0*
-

@@ -233,21 +233,36 @@
         <!-- Top Header -->
         <div class="top-header">
             <div class="flex items-center">
-                <a href="dashboard.html" class="mr-3">
-                    <i class="fas fa-arrow-left text-white"></i>
-                </a>
-                <h1 class="text-lg font-bold" data-i18n="leave.title">Leave Request</h1>
+                <h1 class="text-base font-semibold" data-i18n="leave.title">Leave Request</h1>
+                <span class="mx-2 text-white text-opacity-50">|</span>
+                <span class="text-xs text-white text-opacity-80" id="currentDate">Oct 28, 2025</span>
             </div>
             <div class="header-right">
                 <!-- Language Switcher -->
                 <div class="lang-switcher relative">
                     <div class="flex items-center cursor-pointer" onclick="toggleLangDropdown()">
-                        <i class="fas fa-globe text-white"></i>
-                        <span class="current-lang ml-1 text-sm" id="currentLangText">EN</span>
+                        <i class="fas fa-globe text-white text-sm"></i>
+                        <span class="current-lang ml-1 text-xs" id="currentLangText">EN</span>
                     </div>
                     <div class="dropdown-menu" id="langDropdown">
                         <div class="dropdown-item" data-lang="en" onclick="switchLanguage('en')">English</div>
                         <div class="dropdown-item" data-lang="zh" onclick="switchLanguage('zh')">繁體中文</div>
+                    </div>
+                </div>
+                <!-- User Profile Icon -->
+                <div class="relative ml-3">
+                    <button onclick="toggleProfileMenu()" class="flex items-center focus:outline-none">
+                        <div class="w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
+                            <i class="fas fa-user text-white text-xs"></i>
+                        </div>
+                    </button>
+                    <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50" id="profileMenu">
+                        <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-user mr-2"></i><span data-i18n="nav.profile">Profile</span>
+                        </a>
+                        <a href="#" onclick="logout()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-sign-out-alt mr-2"></i><span data-i18n="nav.logout">Logout</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -449,7 +464,41 @@
         let editMode = false;
         let editRequestId = null;
 
+        // Initialize current date
+        function initializeDate() {
+            const dateElement = document.getElementById('currentDate');
+            const now = new Date();
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            dateElement.textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        // Profile menu toggle
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Close profile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('profileMenu');
+            const target = event.target;
+            if (!target.closest('.relative') && !menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+            }
+        });
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('username');
+                localStorage.removeItem('rememberMe');
+                window.location.href = '../login.html';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+            initializeDate();
             // Check if logged in
             const username = localStorage.getItem('username');
             if (!username) {

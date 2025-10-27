@@ -23,21 +23,19 @@
 </head>
 <body>
     <div class="page-container">
-        <!-- Top Header with Language Switcher -->
+        <!-- Top Header -->
         <div class="top-header">
             <div class="flex items-center">
-                <i class="fas fa-home text-white mr-2"></i>
-                <h1 class="text-lg font-bold" data-i18n="dashboard.title">Home</h1>
+                <h1 class="text-base font-semibold" data-i18n="dashboard.title">Home</h1>
+                <span class="mx-2 text-white text-opacity-50">|</span>
+                <span class="text-xs text-white text-opacity-80" id="currentDate">Oct 28, 2025</span>
             </div>
             <div class="header-right">
-                <!-- Today's Date -->
-                <div class="text-white text-xs mr-3" id="currentDate">Monday, October 20, 2025</div>
-                
                 <!-- Language Switcher -->
                 <div class="lang-switcher relative">
                     <div class="flex items-center cursor-pointer" onclick="toggleLangDropdown()">
-                        <i class="fas fa-globe text-white"></i>
-                        <span class="current-lang ml-1 text-sm" id="currentLangText">EN</span>
+                        <i class="fas fa-globe text-white text-sm"></i>
+                        <span class="current-lang ml-1 text-xs" id="currentLangText">EN</span>
                     </div>
                     <div class="dropdown-menu" id="langDropdown">
                         <div class="dropdown-item" data-lang="en" onclick="switchLanguage('en')">
@@ -49,10 +47,10 @@
                     </div>
                 </div>
                 <!-- User Profile Icon -->
-                <div class="relative">
+                <div class="relative ml-3">
                     <button onclick="toggleProfileMenu()" class="flex items-center focus:outline-none">
                         <div class="w-8 h-8 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
-                            <i class="fas fa-user text-white text-sm"></i>
+                            <i class="fas fa-user text-white text-xs"></i>
                         </div>
                     </button>
                     <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50" id="profileMenu">
@@ -81,10 +79,10 @@
                 </div>
             </div>
 
-            <!-- Leave Balance Section -->
+            <!-- Leave Summary Section -->
             <div class="mb-6">
                 <div class="bg-white p-5 rounded-lg shadow-md">
-                    <h3 class="text-sm font-medium text-[#00AFB9] mb-4" data-i18n="dashboard.leaveBalance">Leave Balance</h3>
+                    <h3 class="text-sm font-medium text-[#00AFB9] mb-4">Leave Summary</h3>
                     
                     <div class="grid grid-cols-2 gap-3">
                         <!-- Annual Leave Card -->
@@ -257,7 +255,7 @@
         function initializeDate() {
             const dateElement = document.getElementById('currentDate');
             const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
             dateElement.textContent = now.toLocaleDateString('en-US', options);
         }
 
